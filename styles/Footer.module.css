@@ -1,0 +1,25 @@
+.footer {
+    height: 10%;
+    width: 100%;
+    color: white;
+    background-color: black;
+    position: relative;
+}
+
+.app_title {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.profile_links {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}

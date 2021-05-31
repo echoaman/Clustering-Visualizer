@@ -1,0 +1,14 @@
+.algo_container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    height: 15%;
+    background-color: black;
+}
+
+.wrapper {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
