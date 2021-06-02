@@ -5,7 +5,7 @@
 
 Revamp of a project I made during my college days! The one I created during my college days was just an Express server, which would serve an **index.html, 3 Javascript files and a CSS file**.
 
-### Run locally:
+### Run locally
 **Install dependencies:** `npm install`
 
 **Run development server:** `npm run dev`

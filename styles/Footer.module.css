@@ -4,6 +4,7 @@
     color: white;
     background-color: black;
     position: relative;
+    border-top: 1px solid #1c1c1c;
 }
 
 .app_title {
