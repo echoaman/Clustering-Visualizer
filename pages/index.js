@@ -3,7 +3,7 @@ import Canvas from "../components/Canvas";
 import Footer from "../components/Footer";
 import Algorithms from "../components/Algorithms";
 import Controller from "../components/Controller";
-import styles from "../styles/Home.module.css"
+import styles from "../styles/Home.module.css";
 
 const Home = () => {
     return (

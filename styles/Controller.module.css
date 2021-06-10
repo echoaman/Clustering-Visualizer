@@ -33,6 +33,7 @@
 
 .main_ctrl_item_random {
     position: absolute;
+    color: white;
     top: 70%;
     right: 0;
 }
@@ -44,4 +45,8 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+}
+
+.range {
+    width: 250px;
 }
