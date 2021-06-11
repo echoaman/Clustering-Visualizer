@@ -1,7 +1,7 @@
 import controllerStyles from "../styles/Controller.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Action_Update_Centroid_Count, Action_Update_Data_Count, Action_Update_Secondary_Ctrl } from "../redux/actions/controllerActions";
-import { generateRandomCentroids, generateRandomData } from "../js/utility";
+import { changeCanvasClickEvent, generateRandomCentroids, generateRandomData } from "../js/utility";
 
 const Controller = () => {
 
@@ -18,6 +18,14 @@ const Controller = () => {
     const centroidCountChange = (count) => {
         dispatch(Action_Update_Centroid_Count(count));
         generateRandomCentroids(count);
+    }
+
+    const secondaryControlChange = (ctrlId) => {
+        if(ctrlId === secCtrl) {
+            ctrlId = "";
+        }
+        
+        changeCanvasClickEvent(ctrlId);
     }
 
     return (
@@ -37,9 +45,9 @@ const Controller = () => {
                 </div>
             </div>
             <div className={controllerStyles.sec_ctrl}>
-                <button id="add-data-btn" style={{ color: secCtrl === "add-data-btn" ? "white" : "grey" }} onClick={() => dispatch(Action_Update_Secondary_Ctrl("add-data-btn"))} >Add data</button>
-                <button id="add-centroid-btn" style={{ color: secCtrl === "add-centroid-btn" ? "white" : "grey" }} onClick={() => dispatch(Action_Update_Secondary_Ctrl("add-centroid-btn"))} >Add centroid</button>
-                <button id="remove-data-btn" style={{ color: secCtrl === "remove-data-btn" ? "white" : "grey" }} onClick={() => dispatch(Action_Update_Secondary_Ctrl("remove-data-btn"))} >Remove data/centroid</button>
+                <button id="add-data-btn" className={secCtrl === "add-data-btn" ? "" : "inactive-btn"} onClick={() => secondaryControlChange("add-data-btn")} >Add data</button>
+                <button id="add-centroid-btn" className={secCtrl === "add-centroid-btn" ? "" : "inactive-btn"} onClick={() => secondaryControlChange("add-centroid-btn")} >Add centroid</button>
+                <button id="remove-point-btn" className={secCtrl === "remove-point-btn" ? "" : "inactive-btn"} onClick={() => secondaryControlChange("remove-point-btn")} >Remove data/centroid</button>
             </div>
         </section>
     );

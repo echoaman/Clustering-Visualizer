@@ -1,5 +1,12 @@
+import { Point } from "../../js/Point";
 import { Update_Centroids, Update_Data } from "../types";
 
+
+/**
+ * @type {Object}
+ * @property {Point[]} Data
+ * @property {Point[]} Data
+ */
 const initialState = {
     Data : [],
     Centroids : [],

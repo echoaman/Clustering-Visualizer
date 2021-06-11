@@ -3,7 +3,7 @@ import { Update_Centroid_Count, Update_Data_Count, Update_Secondary_Ctrl } from 
 const initialState = {
     Data_Count : 0,
     Centroid_Count : 0,
-    Secondary_Ctrl : "add-data-btn"
+    Secondary_Ctrl : ""
 };
 
 export const controllerReducer = (state = initialState, action) => {
