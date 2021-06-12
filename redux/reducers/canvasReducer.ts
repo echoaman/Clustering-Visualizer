@@ -1,32 +1,28 @@
-import { Point } from "../../js/Point";
-import { Update_Centroids, Update_Data } from "../types";
+import { Point } from "../../lib/Point";
+import { ActionTypes } from "../states-and-actions/action-types";
+import { ACanvas } from "../states-and-actions/actions";
+import { SCanvas } from "../states-and-actions/states";
 
-
-/**
- * @type {Object}
- * @property {Point[]} Data
- * @property {Point[]} Data
- */
-const initialState = {
-    Data : [],
-    Centroids : [],
+const initialState: SCanvas = {
+    Data: <Point[]>[],
+    Centers: <Point[]>[],
 };
 
-export const canvasReducer = (state = initialState, action) => {
+export const canvasReducer = (state: SCanvas = initialState, action: ACanvas): SCanvas => {
     switch (action.type) {
-        case Update_Data:
+        case ActionTypes.DataListUpdate:
             return {
                 ...state,
-                Data : action.payload
+                Data: action.payload
             };
 
-        case Update_Centroids:
+        case ActionTypes.CentersListUpdate:
             return {
                 ...state,
-                Centroids : action.payload
+                Centers: action.payload
             };
 
         default:
             return { ...state };
-    }
+    };
 }

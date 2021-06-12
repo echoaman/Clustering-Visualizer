@@ -1,6 +1,6 @@
 import footerStyles from "../styles/Footer.module.css";
 
-const Footer = () => {
+export default function Footer() {
     return(
         <footer className={footerStyles.footer}>
             <h1 className={footerStyles.app_title}>Clustering Visualizer</h1>
@@ -9,5 +9,3 @@ const Footer = () => {
         </footer>
     );
 }
-
-export default Footer;

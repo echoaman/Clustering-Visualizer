@@ -5,7 +5,7 @@ import Algorithms from "../components/Algorithms";
 import Controller from "../components/Controller";
 import styles from "../styles/Home.module.css";
 
-const Home = () => {
+export default function Home() {
     return (
         <div className={styles.container}>
             <Head>
@@ -21,5 +21,3 @@ const Home = () => {
         </div>
     );
 }
-
-export default Home;

@@ -1,18 +1,21 @@
-import { Update_Selected_Algorithm } from "../types";
+import { Algos } from "../../lib/enums";
+import { ActionTypes } from "../states-and-actions/action-types";
+import { AAlgorithms } from "../states-and-actions/actions";
+import { SAlgorithms } from "../states-and-actions/states";
 
-const initialState = {
-    Selected_Algorithm : "kmeans"
-}
+const initialState: SAlgorithms = {
+    SelectedAlgorithm: Algos.Kmeans
+};
 
-export const algorithmsReducer = (state = initialState, action) => {
+export const algorithmsReducer = (state: SAlgorithms = initialState, action: AAlgorithms): SAlgorithms => {
     switch (action.type) {
-        case Update_Selected_Algorithm:
+        case ActionTypes.AlgorithmUpdate:
             return {
                 ...state,
-                Selected_Algorithm : action.payload
+                SelectedAlgorithm: action.payload
             };
-    
+
         default:
             return { ...state };
-    }
+    };
 }

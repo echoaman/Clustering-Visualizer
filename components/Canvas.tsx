@@ -1,15 +1,15 @@
-import canvasStyles from "../styles/Canvas.module.css";
 import { useEffect } from "react";
+import canvasStyles from "../styles/Canvas.module.css";
 
-const Canvas = () => {
+export default function Canvas() {
 
     // componentDidMount
     // set the width and height of canvas
     useEffect(() => {
-        let canvas = document.getElementById("canvas");
-        let boardBoundingClientRect = canvas.getBoundingClientRect();
-        canvas.height = boardBoundingClientRect.height;
-        canvas.width = boardBoundingClientRect.width;
+        const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+        const canvasBoundingClientRect = canvas.getBoundingClientRect();
+        canvas.height = canvasBoundingClientRect.height;
+        canvas.width = canvasBoundingClientRect.width;
     }, []);
 
     return (
@@ -18,5 +18,3 @@ const Canvas = () => {
         </section>
     );
 }
-
-export default Canvas;

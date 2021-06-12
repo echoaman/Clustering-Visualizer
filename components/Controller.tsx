@@ -1,28 +1,31 @@
 import controllerStyles from "../styles/Controller.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Action_Update_Centroid_Count, Action_Update_Data_Count, Action_Update_Secondary_Ctrl } from "../redux/actions/controllerActions";
-import { changeCanvasClickEvent, generateRandomCentroids, generateRandomData } from "../js/utility";
+import { AppState } from "../redux/reducers/rootReducer";
+import { AController } from "../redux/states-and-actions/actions";
+import { updateCentersCountAction, updateDataCountAction } from "../redux/action-creators/controllerActions";
+import { SecondaryControlButtons } from "../lib/enums";
+import { changeCanvasClickEvent, generateRandomCenters, generateRandomData } from "../lib/utility";
 
-const Controller = () => {
+export default function Controller() {
 
     const dispatch = useDispatch();
-    const dataCount = useSelector(state => state.controller.Data_Count);
-    const centroidCount = useSelector(state => state.controller.Centroid_Count);
-    const secCtrl = useSelector(state => state.controller.Secondary_Ctrl);
+    const DataCount = useSelector((state: AppState) => state.controller.DataCount);
+    const CentersCount = useSelector((state: AppState) => state.controller.CentersCount);
+    const SecondaryControl = useSelector((state: AppState) => state.controller.SecondaryControl);
 
-    const dataCountChange = (count) => {
-        dispatch(Action_Update_Data_Count(count));
-        generateRandomData(count);
+    const dataCountChange = (count: number) => {
+        dispatch<AController>(updateDataCountAction(count));
+        generateRandomData();
     }
 
-    const centroidCountChange = (count) => {
-        dispatch(Action_Update_Centroid_Count(count));
-        generateRandomCentroids(count);
+    const centerCountChange = (count: number) => {
+        dispatch<AController>(updateCentersCountAction(count));
+        generateRandomCenters();
     }
 
-    const secondaryControlChange = (ctrlId) => {
-        if(ctrlId === secCtrl) {
-            ctrlId = "";
+    const secondaryControlChange = (ctrlId: SecondaryControlButtons) => {
+        if(ctrlId === SecondaryControl) {
+            ctrlId = SecondaryControlButtons.None;
         }
         
         changeCanvasClickEvent(ctrlId);
@@ -33,24 +36,22 @@ const Controller = () => {
             <div className={controllerStyles.main_ctrl} >
                 <div className={controllerStyles.main_ctrl_item}>
                     <span className={controllerStyles.main_ctrl_item_label}>Data count</span>
-                    <input className={controllerStyles.range} type="range" min="0" max="500" value={dataCount} step="1" onChange={e => dataCountChange(e.target.value)} />
-                    <span className={controllerStyles.main_ctrl_item_count}>{dataCount}</span>
+                    <input className={controllerStyles.range} type="range" min="0" max="500" value={DataCount} step="1" onChange={e => dataCountChange(parseInt(e.target.value))} />
+                    <span className={controllerStyles.main_ctrl_item_count}>{DataCount}</span>
                     <button className={controllerStyles.main_ctrl_item_random} id="data-random" onClick={() => generateRandomData()}>Randomize</button>
                 </div>
                 <div className={controllerStyles.main_ctrl_item}>
                     <span className={controllerStyles.main_ctrl_item_label}>Centroid count</span>
-                    <input className={controllerStyles.range} type="range" min="0" max="10" value={centroidCount} step="1" onChange={e => centroidCountChange(e.target.value)} />
-                    <span className={controllerStyles.main_ctrl_item_count}>{centroidCount}</span>
-                    <button className={controllerStyles.main_ctrl_item_random} id="centroid-random" onClick={() => generateRandomCentroids()}>Randomize</button>
+                    <input className={controllerStyles.range} type="range" min="0" max="10" value={CentersCount} step="1" onChange={e => centerCountChange(parseInt(e.target.value))} />
+                    <span className={controllerStyles.main_ctrl_item_count}>{CentersCount}</span>
+                    <button className={controllerStyles.main_ctrl_item_random} id="centroid-random" onClick={() => generateRandomCenters()}>Randomize</button>
                 </div>
             </div>
             <div className={controllerStyles.sec_ctrl}>
-                <button id="add-data-btn" className={secCtrl === "add-data-btn" ? "" : "inactive-btn"} onClick={() => secondaryControlChange("add-data-btn")} >Add data</button>
-                <button id="add-centroid-btn" className={secCtrl === "add-centroid-btn" ? "" : "inactive-btn"} onClick={() => secondaryControlChange("add-centroid-btn")} >Add centroid</button>
-                <button id="remove-point-btn" className={secCtrl === "remove-point-btn" ? "" : "inactive-btn"} onClick={() => secondaryControlChange("remove-point-btn")} >Remove data/centroid</button>
+                <button id={SecondaryControlButtons.AddData} className={SecondaryControl === SecondaryControlButtons.AddData ? "" : "inactive-btn"} onClick={() => secondaryControlChange(SecondaryControlButtons.AddData)} >Add data</button>
+                <button id={SecondaryControlButtons.AddCenter} className={SecondaryControl === SecondaryControlButtons.AddCenter ? "" : "inactive-btn"} onClick={() => secondaryControlChange(SecondaryControlButtons.AddCenter)} >Add centroid</button>
+                <button id={SecondaryControlButtons.RemovePoint} className={SecondaryControl === SecondaryControlButtons.RemovePoint ? "" : "inactive-btn"} onClick={() => secondaryControlChange(SecondaryControlButtons.RemovePoint)} >Remove data/centroid</button>
             </div>
         </section>
     );
 }
-
-export default Controller;

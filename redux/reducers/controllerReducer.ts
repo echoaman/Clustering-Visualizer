@@ -1,29 +1,32 @@
-import { Update_Centroid_Count, Update_Data_Count, Update_Secondary_Ctrl } from "../types";
+import { SecondaryControlButtons } from "../../lib/enums";
+import { ActionTypes } from "../states-and-actions/action-types";
+import { AController } from "../states-and-actions/actions";
+import { SController } from "../states-and-actions/states";
 
-const initialState = {
-    Data_Count : 0,
-    Centroid_Count : 0,
-    Secondary_Ctrl : ""
+const initialState: SController = {
+    DataCount: 0,
+    CentersCount: 0,
+    SecondaryControl: SecondaryControlButtons.None
 };
 
-export const controllerReducer = (state = initialState, action) => {
+export const controllerReducer = (state: SController = initialState, action: AController): SController => {
     switch (action.type) {
-        case Update_Data_Count:
+        case ActionTypes.DataCountUpdate:
             return {
                 ...state,
-                Data_Count: action.payload
+                DataCount: action.payload
             };
-    
-        case Update_Centroid_Count:
+
+        case ActionTypes.CentersCountUpdate:
             return {
                 ...state,
-                Centroid_Count: action.payload
+                CentersCount: action.payload
             }
-        
-        case Update_Secondary_Ctrl:
+
+        case ActionTypes.SecondaryControlUpdate:
             return {
                 ...state,
-                Secondary_Ctrl: action.payload
+                SecondaryControl: action.payload
             }
         default:
             return { ...state };

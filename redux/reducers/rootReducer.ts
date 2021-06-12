@@ -8,3 +8,5 @@ export const rootReducer = combineReducers({
     algorithms: algorithmsReducer,
     controller: controllerReducer
 });
+
+export type AppState = ReturnType<typeof rootReducer>;
