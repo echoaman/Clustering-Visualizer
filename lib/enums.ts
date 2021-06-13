@@ -8,3 +8,12 @@ export enum SecondaryControlButtons {
     RemovePoint = "remove-point-btn",
     None = ""
 };
+
+export enum Settings {
+    Radius = 5,
+    White = "#fff",
+    Black = "#000",
+    MaxDataLimit = 500,
+    MaxCenterLimit = 10,
+    Increment = 0.03
+}

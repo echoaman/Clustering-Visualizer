@@ -2,112 +2,112 @@ import { updateCentersListAction, updateDataListAction } from "../redux/action-c
 import { updateCentersCountAction, updateDataCountAction, updateSecondaryControlAction } from "../redux/action-creators/controllerActions";
 import { ACanvas, AController } from "../redux/states-and-actions/actions";
 import { store } from "../redux/store";
-import { addCentroid, generateRandomCentroids } from "./algorithms/kmeans";
-import { Algos, SecondaryControlButtons } from "./enums";
+import { addCentroid, generateRandomCentroids, kmeans } from "./algorithms/kmeans";
+import { Algos, SecondaryControlButtons, Settings } from "./enums";
 import { Point } from "./Point";
-
-export const radius = 5;
-export const white = "#fff";
-export const black = "#000";
 
 /**
  * Removes all drawings from the canvas
  */
 export const clearBoard = () => {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    const context = canvas.getContext("2d");
-    context?.clearRect(0, 0, canvas.width, canvas.height);
+    const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+    context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 /**
- * Clears canvas and redraws data and center points in their default state
+ * Clears canvas and redraws data and centers in their default state
  */
 export const resetBoard = () => {
     clearBoard();
-    const data = store.getState().canvas.Data;
-    const centers = store.getState().canvas.Centers;
+    const data: Point[] = store.getState().canvas.Data;
+    const centers: Point[] = store.getState().canvas.Centers;
 
     data.forEach((data) => {
-        drawData(data);
+        data.color = Settings.White;
+        drawData(data.x, data.y, data.color);
     });
 
     centers.forEach((center) => {
-        drawCenter(center);
+        drawCenter(center.x, center.y, center.color);
     });
+
+    store.dispatch<ACanvas>(updateDataListAction(data));
+    store.dispatch<ACanvas>(updateCentersListAction(centers));
 }
 
-export const drawCenter = (center: Point) => {
+export const drawCenter = (centerX: number, centerY: number, color: string) => {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-    let rotation = Math.PI / 2 * 3;
-    let x = center.x;
-    let y = center.y;
-    let step = Math.PI / 5;
+    let rotation: number = Math.PI / 2 * 3;
+    let x: number = centerX;
+    let y: number = centerY;
+    let step: number = Math.PI / 5;
 
-    context!.beginPath();
-    context!.moveTo(center.x, center.y - radius);
+    context.beginPath();
+    context.moveTo(centerX, centerY - Settings.Radius);
 
     for (let i = 0; i < 5; i++) {
-        x = center.x + Math.cos(rotation) * radius;
-        y = center.y + Math.sin(rotation) * radius;
-        context!.lineTo(x, y);
+        x = centerX + Math.cos(rotation) * Settings.Radius;
+        y = centerY + Math.sin(rotation) * Settings.Radius;
+        context.lineTo(x, y);
         rotation += step;
 
-        x = center.x + Math.cos(rotation) * 2;
-        y = center.y + Math.sin(rotation) * 2;
-        context!.lineTo(x, y);
+        x = centerX + Math.cos(rotation) * 2;
+        y = centerY + Math.sin(rotation) * 2;
+        context.lineTo(x, y);
         rotation += step;
     }
 
-    context!.lineTo(center.x, center.y - radius);
-    context!.closePath();
-    context!.lineWidth = 1;
-    context!.strokeStyle = black;
-    context!.stroke();
-    context!.fillStyle = center.color;
-    context!.fill();
+    context.lineTo(centerX, centerY - Settings.Radius);
+    context.closePath();
+    context.lineWidth = 1;
+    context.strokeStyle = Settings.Black;
+    context.stroke();
+    context.fillStyle = color;
+    context.fill();
 }
 
 
-export const drawData = (data: Point) => {
+export const drawData = (dataX: number, dataY: number, color: string) => {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext("2d") as CanvasRenderingContext2D ;
 
-    context!.beginPath();
-    context!.arc(data.x, data.y, radius, 0, Math.PI * 2, false);
-    context!.lineWidth = 1;
-    context!.strokeStyle = white;
-    context!.stroke();
-    context!.fillStyle = data.color;
-    context!.fill();
+    context.beginPath();
+    context.arc(dataX, dataY, Settings.Radius, 0, Math.PI * 2, false);
+    context.lineWidth = 1;
+    context.strokeStyle = Settings.White;
+    context.stroke();
+    context.fillStyle = color;
+    context.fill();
 }
 
 export const generateRandomData = () => {
-    const count = store.getState().controller.DataCount;
+    const count: number = store.getState().controller.DataCount;
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    let newData = <Point[]>[];
+    let newData: Point[] = <Point[]>[];
 
     clearBoard();
 
     for(let i = 0 ; i < count ; i++) {
-        let data = new Point(Math.random() * (canvas.width - radius * 2) + radius, Math.random() * (canvas.height - radius * 2) + radius, white);
+        let data: Point = new Point(Math.random() * (canvas.width - Settings.Radius * 2) + Settings.Radius, Math.random() * (canvas.height - Settings.Radius * 2) + Settings.Radius, Settings.White);
 
         newData.push(data);
-        drawData(data);
+        drawData(data.x, data.y, data.color);
     }
 
     const centers: Point[] = store.getState().canvas.Centers;
     for(let j = 0 ; j < centers.length ; j++) {
-        drawCenter(centers[j]);
+        drawCenter(centers[j].x, centers[j].y, centers[j].color);
     }
 
     store.dispatch<ACanvas>(updateDataListAction(newData));
 }
 
 export const generateColor = () => {
-    let color = "#";
-    let palette = "0123456789abcdef";
+    let color: string = "#";
+    let palette: string = "0123456789abcdef";
     while (color.length < 7)
         color += palette[Math.floor(Math.random() * palette.length)];
 
@@ -115,7 +115,7 @@ export const generateColor = () => {
 }
 
 export const generateRandomCenters = () => {
-    const algo = store.getState().algorithms.SelectedAlgorithm;
+    const algo: Algos = store.getState().algorithms.SelectedAlgorithm;
     switch (algo) {
         case Algos.Kmeans:
             generateRandomCentroids();
@@ -129,16 +129,16 @@ export const generateRandomCenters = () => {
 export const getClickCoordinates = (e: MouseEvent) => {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
-    const x = e.x - canvas.getBoundingClientRect().x;
-    const y = e.y - canvas.getBoundingClientRect().y;
+    const x: number = e.x - canvas.getBoundingClientRect().x;
+    const y: number = e.y - canvas.getBoundingClientRect().y;
 
     return { x, y };
 }
 
 const getClickedPoint = (x: number, y: number, data: Point[], centers: Point[]) => {
-    let minDist = radius;
-    let index = -1;
-    let isCenter = false;
+    let minDist: number = Settings.Radius;
+    let index: number = -1;
+    let isCenter: boolean = false;
 
     for (let i = 0; i < data.length; i++) {
         let dist = Math.sqrt(Math.pow(x - data[i].x, 2) + Math.pow(y - data[i].y, 2));
@@ -164,22 +164,26 @@ const getClickedPoint = (x: number, y: number, data: Point[], centers: Point[]) 
     };
 }
 
-
 const addData = (e: MouseEvent) => {
-    const data = store.getState().canvas.Data;
+    const data: Point[] = store.getState().canvas.Data;
+    if(data.length >= Settings.MaxDataLimit) {
+        alert(`The max data limit is ${Settings.MaxDataLimit}!`);
+        return;
+    }
+    
     const { x, y } = getClickCoordinates(e);
 
-    const dataPoint = new Point(x, y, white);
-    drawData(dataPoint);
+    const dataPoint: Point = new Point(x, y, Settings.White);
+    drawData(dataPoint.x, dataPoint.y, dataPoint.color);
 
-    const newData = [...data, dataPoint];
+    const newData: Point[] = [...data, dataPoint];
     store.dispatch<ACanvas>(updateDataListAction(newData));
     store.dispatch<AController>(updateDataCountAction(newData.length));
 }
 
 
 const addCenter = (e: MouseEvent) => {
-    const algo = store.getState().algorithms.SelectedAlgorithm;
+    const algo: Algos = store.getState().algorithms.SelectedAlgorithm;
     switch (algo) {
         case Algos.Kmeans:
             addCentroid(e);
@@ -191,8 +195,8 @@ const addCenter = (e: MouseEvent) => {
 }
 
 const removePoint = (e: MouseEvent) => {
-    const data = store.getState().canvas.Data;
-    const centers = store.getState().canvas.Centers;
+    const data: Point[] = store.getState().canvas.Data;
+    const centers: Point[] = store.getState().canvas.Centers;
     const { x, y } = getClickCoordinates(e);
 
     const { index, isCenter } = getClickedPoint(x, y, data, centers);
@@ -201,8 +205,8 @@ const removePoint = (e: MouseEvent) => {
         return;
     }
     
-    let newData = data;
-    let newCenters = centers;
+    let newData: Point[] = data;
+    let newCenters: Point[] = centers;
 
     if(isCenter) {
         newCenters.splice(index, 1);
@@ -212,11 +216,11 @@ const removePoint = (e: MouseEvent) => {
 
     clearBoard();
     for(let i = 0 ; i < newData.length ; i++) {
-        drawData(newData[i]);
+        drawData(newData[i].x, newData[i].y, newData[i].color);
     }
 
     for(let j = 0 ; j < newCenters.length ; j++) {
-        drawCenter(newCenters[j]);
+        drawCenter(newCenters[j].x, newCenters[j].y, newCenters[j].color);
     }
 
     store.dispatch<AController>(updateCentersCountAction(newCenters.length));
@@ -292,4 +296,18 @@ export const enableButtons = () => {
 
     document.getElementById("rocket")!.style.fill = "green";
     document.getElementById("clear")!.style.fill = "red";
+}
+
+export const startAlgo = () => {
+    const algo: Algos = store.getState().algorithms.SelectedAlgorithm;
+
+    switch (algo) {
+        case Algos.Kmeans:
+            kmeans();
+            break;
+    
+        default:
+            alert("Select algorithm!");
+            break;
+    }
 }
