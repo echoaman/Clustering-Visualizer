@@ -1,8 +1,13 @@
 .canvas_container {
     width: 100%;
-    min-height: 420px;
     height: 60%;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.canvas {
+    width: 90%;
+    height: 90%;
+    background-color: black;
 }
