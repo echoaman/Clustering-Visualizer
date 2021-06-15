@@ -9,7 +9,11 @@ interface IUpdateSelectedAlgorithm {
     payload: Algos
 };
 
-export type AAlgorithms = IUpdateSelectedAlgorithm;
+interface IAppRunningToggle {
+    type: ActionTypes.AppRunningToggle
+}
+
+export type AAlgorithms = IUpdateSelectedAlgorithm | IAppRunningToggle;
 
 // Canvas
 

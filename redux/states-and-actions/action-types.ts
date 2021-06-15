@@ -4,5 +4,6 @@ export enum ActionTypes {
     CentersListUpdate = "centers/list/update",
     CentersCountUpdate = "centers/count/update",
     SecondaryControlUpdate = "secondaryControl/update",
-    AlgorithmUpdate = "algorithm/update"
+    AlgorithmUpdate = "algorithm/update",
+    AppRunningToggle = "appRunning/toggle"
 };
