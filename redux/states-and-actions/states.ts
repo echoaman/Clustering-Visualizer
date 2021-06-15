@@ -2,7 +2,8 @@ import { Algos, SecondaryControlButtons } from "../../lib/enums";
 import { Point } from "../../lib/Point";
 
 export type SAlgorithms = {
-    SelectedAlgorithm: Algos
+    SelectedAlgorithm: Algos,
+    IsAppRunning: boolean
 };
 
 export type SCanvas = {

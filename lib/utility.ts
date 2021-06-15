@@ -1,6 +1,7 @@
+import { appRunningToggle } from "../redux/action-creators/algorithmActions";
 import { updateCentersListAction, updateDataListAction } from "../redux/action-creators/canvasActions";
 import { updateCentersCountAction, updateDataCountAction, updateSecondaryControlAction } from "../redux/action-creators/controllerActions";
-import { ACanvas, AController } from "../redux/states-and-actions/actions";
+import { AAlgorithms, ACanvas, AController } from "../redux/states-and-actions/actions";
 import { store } from "../redux/store";
 import { addCentroid, generateRandomCentroids, kmeans } from "./algorithms/kmeans";
 import { Algos, SecondaryControlButtons, Settings } from "./enums";
@@ -264,38 +265,12 @@ export const changeCanvasClickEvent = (ctrlId: SecondaryControlButtons) => {
 
 export const disableButtons = () => {
     removeCanvasClickEvents();
-
-    const buttons = document.querySelectorAll("button");
-    buttons.forEach((button) => {
-        button.classList.add("disabled-btn");
-        button.disabled = true;
-    });
-
-    const inputs = document.querySelectorAll("input");
-    inputs.forEach((input) => {
-        input.disabled = true;
-    });
-
-    document.getElementById("rocket")!.style.fill = "grey";
-    document.getElementById("clear")!.style.fill = "grey";
+    store.dispatch<AAlgorithms>(appRunningToggle());
 }
 
 export const enableButtons = () => {
     removeCanvasClickEvents();
-
-    const buttons = document.querySelectorAll("button");
-    buttons.forEach((button) => {
-        button.classList.remove("disabled-btn");
-        button.disabled = false;
-    });
-
-    const inputs = document.querySelectorAll("input");
-    inputs.forEach((input) => {
-        input.disabled = false;
-    });
-
-    document.getElementById("rocket")!.style.fill = "green";
-    document.getElementById("clear")!.style.fill = "red";
+    store.dispatch<AAlgorithms>(appRunningToggle());
 }
 
 export const startAlgo = () => {

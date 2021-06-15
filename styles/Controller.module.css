@@ -6,16 +6,52 @@
     color: white;
 }
 
+.coordinates {
+    height: 100%;
+    width: 10%;
+    position: relative;
+}
+
+.coordinates_label {
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    transform: translateX(-50%);
+}
+
+.coordinates_x {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.coordinates_y {
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%);
+}
+
 .main_ctrl {
     height: 100%;
-    width: 80%;
+    width: 70%;
     display: flex;
     justify-content: space-evenly;
 }
 
-.main_ctrl_item {
+.sec_ctrl {
     height: 100%;
     width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.main_ctrl_item {
+    height: 100%;
+    width: 25%;
     position: relative;
     display: flex;
 }
@@ -29,22 +65,13 @@
 
 .main_ctrl_item_count {
     position: absolute;
-    top: 70%;
+    top: 75%;
 }
 
 .main_ctrl_item_random {
     position: absolute;
-    top: 70%;
+    top: 75%;
     right: 0;
-}
-
-.sec_ctrl {
-    height: 100%;
-    width: 20%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
 }
 
 .range {   

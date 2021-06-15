@@ -20,28 +20,28 @@ let percentage: number = 0;
 export const generateRandomCentroids = () => {
     const count: number = store.getState().controller.CentersCount;
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    const data: Point[] = store.getState().canvas.Data;
+    const currData: Point[] = store.getState().canvas.Data;
 
     clearBoard();
 
-    let centroids = <Point[]>[];
+    let newCentroids = <Point[]>[];
 
-    data.forEach((point) => {
-        drawData(point.x, point.y, point.color);
+    currData.forEach((datum) => {
+        drawData(datum.x, datum.y, datum.color);
     });
 
     for(let i = 0 ; i < count ; i++) {
         let centroid: Point = new Point(Math.random() * (canvas.width - Settings.Radius * 2) + Settings.Radius, Math.random() * (canvas.height - Settings.Radius * 2) + Settings.Radius, generateColor());
         drawCenter(centroid.x, centroid.y, centroid.color);
-        centroids.push(centroid);
+        newCentroids.push(centroid);
     }
 
-    store.dispatch<ACanvas>(updateCentersListAction(centroids));
+    store.dispatch<ACanvas>(updateCentersListAction(newCentroids));
 }
 
 export const addCentroid = (e: MouseEvent) => {
-    const centroids: Point[] = store.getState().canvas.Centers;
-    if(centroids.length >= Settings.MaxCenterLimit) {
+    const currCentroids: Point[] = store.getState().canvas.Centers;
+    if(currCentroids.length >= Settings.MaxCenterLimit) {
         alert(`The max centroid limit ${Settings.MaxCenterLimit}!`);
         return;
     }
@@ -51,7 +51,7 @@ export const addCentroid = (e: MouseEvent) => {
     const centroid: Point = new Point(x, y, generateColor());
     drawCenter(centroid.x, centroid.y, centroid.color);
 
-    const newCentroids: Point[] = [...centroids, centroid];
+    const newCentroids: Point[] = [...currCentroids, centroid];
     store.dispatch<ACanvas>(updateCentersListAction(newCentroids));
     store.dispatch<AController>(updateCentersCountAction(newCentroids.length));
 }
@@ -81,6 +81,14 @@ const clusterCenterCoordinates = () => {
     const cluster = currClusters.get(currCentroidIdx) as number[];
     let centerX: number = 0;
     let centerY: number = 0;
+
+    if(cluster.length === 0) {
+        const centroid = centroids[currCentroidIdx];
+        return {
+            centerX: centroid.x,
+            centerY: centroid.y
+        };
+    }
 
     cluster.forEach((idx) => {
         centerX += data[idx].x;

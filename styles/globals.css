@@ -28,3 +28,7 @@ button {
 .disabled-btn {
     color: grey;
 }
+
+button:disabled {
+    color: grey;
+}
