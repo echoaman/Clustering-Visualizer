@@ -27,7 +27,7 @@ export default function Home() {
         spanY.innerHTML = `Y &#8776; ${Math.floor(coorY)}`;
     };
 
-    const resetCoordinates = (e: MouseEvent) => {
+    const resetCoordinates = () => {
         const spanX = document.getElementById("coorX") as HTMLSpanElement;
         const spanY = document.getElementById("coorY") as HTMLSpanElement;
         spanX.innerHTML = `X &#8776; 0`;
@@ -40,6 +40,7 @@ export default function Home() {
         let canvas = document.getElementById("canvas") as HTMLCanvasElement;
         canvas.addEventListener("mousemove", updateCoordinates, false);
         canvas.addEventListener("mouseleave", resetCoordinates, false);
+        canvas.addEventListener("touchend", resetCoordinates, false);
     }, []);
 
     return (
