@@ -21,16 +21,16 @@
 
 .coordinates_x {
     position: absolute;
-    top: 45%;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%);
+    transform: translate(-50%,-50%);
 }
 
 .coordinates_y {
     position: absolute;
     top: 75%;
     left: 50%;
-    transform: translate(-50%);
+    transform: translateX(-50%);
 }
 
 .main_ctrl {
