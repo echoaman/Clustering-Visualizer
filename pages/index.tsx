@@ -19,7 +19,7 @@ export default function Home() {
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
         const spanX = document.getElementById("coorX") as HTMLSpanElement;
         const spanY = document.getElementById("coorY") as HTMLSpanElement;
-        const { x, y, height} = canvas.getBoundingClientRect();
+        const { x, y, height } = canvas.getBoundingClientRect();
         const coorX: number = e.x - x;
         const coorY: number = height - (e.y - y);
 
@@ -49,7 +49,6 @@ export default function Home() {
                 <title>Clustering Visualizer</title>
                 <meta name="description" content="Clustering Visualizer" />
                 <meta name="keywords" content="Clustering Visualizer" />
-                <link rel="icon" href="/favicon.ico" />
             </Head>
             <Canvas />
             <Algorithms />

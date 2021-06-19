@@ -6,7 +6,9 @@ import { SController } from "../states-and-actions/states";
 const initialState: SController = {
     DataCount: 0,
     CentersCount: 0,
-    SecondaryControl: SecondaryControlButtons.None
+    SecondaryControl: SecondaryControlButtons.None,
+    Neighbourhood: 30,
+    MinPoints: 3
 };
 
 export const controllerReducer = (state: SController = initialState, action: AController): SController => {
@@ -21,13 +23,26 @@ export const controllerReducer = (state: SController = initialState, action: ACo
             return {
                 ...state,
                 CentersCount: action.payload
-            }
+            };
 
         case ActionTypes.SecondaryControlUpdate:
             return {
                 ...state,
                 SecondaryControl: action.payload
-            }
+            };
+
+        case ActionTypes.NeighbourhoodUpdate:
+            return {
+                ...state,
+                Neighbourhood: action.payload
+            };
+        
+        case ActionTypes.MinimumPointsUpdate:
+            return {
+                ...state,
+                MinPoints: action.payload
+            };
+            
         default:
             return { ...state };
     }

@@ -6,8 +6,7 @@ import { Settings } from "../enums";
 import { Point } from "../Point";
 import { Utility } from "../utility";
 
-export namespace KMeans
-{
+export namespace KMeans {
     // clusterId -> Array of indexes of data
     let currClusters: Map<number, number[]> = new Map<number, number[]>();
     let prevClusters: Map<number, number[]> = new Map<number, number[]>();
@@ -45,7 +44,7 @@ export namespace KMeans
         currCentroidIdx = 0;
         percentage = 0;
 
-        for(let i = 0 ; i < centroids.length ; i++) {
+        for (let i = 0; i < centroids.length; i++) {
             currClusters.set(i, []);
         }
     }
@@ -57,7 +56,7 @@ export namespace KMeans
 
         Utility.clearBoard();
 
-        for(let i = 0 ; i < count ; i++) {
+        for (let i = 0; i < count; i++) {
             let datum: Point = new Point(Math.random() * (canvas.width - Settings.Radius * 2) + Settings.Radius, Math.random() * (canvas.height - Settings.Radius * 2) + Settings.Radius, Settings.White);
 
             newData.push(datum);
@@ -85,8 +84,8 @@ export namespace KMeans
             Utility.drawData(datum.x, datum.y, datum.color);
         });
 
-        for(let i = 0 ; i < count ; i++) {
-            let centroid: Point = new Point(Math.random() * (canvas.width - Settings.Radius * 2) + Settings.Radius, Math.random() * (canvas.height - Settings.Radius * 2) + Settings.Radius, Utility.generateColor());
+        for (let i = 0; i < count; i++) {
+            let centroid: Point = new Point(Math.random() * (canvas.width - Settings.Radius * 2) + Settings.Radius, Math.random() * (canvas.height - Settings.Radius * 2) + Settings.Radius, Utility.getHexColor());
             Utility.drawCenter(centroid.x, centroid.y, centroid.color);
             newCentroids.push(centroid);
         }
@@ -96,14 +95,14 @@ export namespace KMeans
 
     export const addCentroid = (e: MouseEvent) => {
         const currCentroids: Point[] = store.getState().canvas.Centers;
-        if(currCentroids.length >= Settings.MaxCenterLimit) {
+        if (currCentroids.length >= Settings.MaxCenterLimit) {
             alert(`The max centroid limit is ${Settings.MaxCenterLimit}!`);
             return;
         }
-        
+
         const { x, y } = Utility.getClickCoordinates(e);
 
-        const centroid: Point = new Point(x, y, Utility.generateColor());
+        const centroid: Point = new Point(x, y, Utility.getHexColor());
         Utility.drawCenter(centroid.x, centroid.y, centroid.color);
 
         const newCentroids: Point[] = [...currCentroids, centroid];
@@ -117,25 +116,25 @@ export namespace KMeans
         const { x, y } = Utility.getClickCoordinates(e);
         const { index, isCenter } = Utility.getClickedPoint(x, y, currData, currCentroids);
 
-        if(index === -1) {
+        if (index === -1) {
             return;
         }
 
         let newData: Point[] = currData;
         let newCentroids: Point[] = currCentroids;
 
-        if(isCenter) {
+        if (isCenter) {
             newCentroids.splice(index, 1);
         } else {
             newData.splice(index, 1);
         }
 
         Utility.clearBoard();
-        for(let i = 0 ; i < newData.length ; i++) {
+        for (let i = 0; i < newData.length; i++) {
             Utility.drawData(newData[i].x, newData[i].y, newData[i].color);
         }
 
-        for(let j = 0 ; j < newCentroids.length ; j++) {
+        for (let j = 0; j < newCentroids.length; j++) {
             Utility.drawCenter(newCentroids[j].x, newCentroids[j].y, newCentroids[j].color);
         }
 
@@ -145,17 +144,13 @@ export namespace KMeans
         store.dispatch<ACanvas>(updateDataListAction(newData));
     }
 
-    const euclideanDistance = (pointA: Point, pointB: Point) => {
-        return Math.sqrt(Math.pow(pointA.x - pointB.x, 2) + Math.pow(pointA.y - pointB.y, 2));
-    }
-
     const assignCluster = (datum: Point, datumIdx: number) => {
         let minDistance: number = Infinity;
         let clusterId: number = -1;
 
         centroids.forEach((centroid, idx) => {
-            let uDistance: number = euclideanDistance(datum, centroid);
-            if(uDistance < minDistance) {
+            let uDistance: number = Utility.euclideanDistance(datum, centroid);
+            if (uDistance < minDistance) {
                 minDistance = uDistance;
                 clusterId = idx;
             }
@@ -171,7 +166,7 @@ export namespace KMeans
         let centerX: number = 0;
         let centerY: number = 0;
 
-        if(cluster.length === 0) {
+        if (cluster.length === 0) {
             const centroid = centroids[currCentroidIdx];
             return {
                 centerX: centroid.x,
@@ -191,11 +186,11 @@ export namespace KMeans
     }
 
     const compareCurrAndPrevClusters = () => {
-        for(let i = 0 ; i < currClusters.size ; i++) {
+        for (let i = 0; i < currClusters.size; i++) {
             const currCluster = currClusters.get(i) as number[];
             const prevCluster = prevClusters.get(i) as number[];
 
-            if(JSON.stringify(currCluster) !== JSON.stringify(prevCluster)) {
+            if (JSON.stringify(currCluster) !== JSON.stringify(prevCluster)) {
                 return false;
             }
         }
@@ -204,12 +199,12 @@ export namespace KMeans
     }
 
     const animateCentroidMovement = () => {
-        if(currCentroidIdx < centroids.length) {
+        if (currCentroidIdx < centroids.length) {
             const { centerX, centerY } = clusterCenterCoordinates();
             let x: number = centroids[currCentroidIdx].x * (1.0 - percentage) + centerX * percentage;
             let y: number = centroids[currCentroidIdx].y * (1.0 - percentage) + centerY * percentage;
-            
-            if(percentage <= 1) {
+
+            if (percentage <= 1) {
                 percentage += Settings.Increment;
 
                 Utility.clearBoard();
@@ -219,7 +214,7 @@ export namespace KMeans
 
                 Utility.drawCenter(x, y, centroids[currCentroidIdx].color);
                 centroids.forEach((centroid, idx) => {
-                    if(idx !== currCentroidIdx) {
+                    if (idx !== currCentroidIdx) {
                         Utility.drawCenter(centroid.x, centroid.y, centroid.color);
                     }
                 });
@@ -241,7 +236,7 @@ export namespace KMeans
                 percentage = 0;
                 prevClusters = currClusters;
                 currClusters = new Map<number, number[]>();
-                for(let i = 0 ; i < centroids.length ; i++) {
+                for (let i = 0; i < centroids.length; i++) {
                     currClusters.set(i, []);
                 }
                 requestAnimationFrame(animateClusterAssignment);
@@ -250,7 +245,7 @@ export namespace KMeans
     }
 
     const animateClusterAssignment = () => {
-        if(currDataIdx < data.length) {
+        if (currDataIdx < data.length) {
             assignCluster(data[currDataIdx], currDataIdx);
             Utility.clearBoard();
 
@@ -264,7 +259,7 @@ export namespace KMeans
 
             currDataIdx++;
             requestAnimationFrame(animateClusterAssignment);
-        }else{
+        } else {
             currDataIdx = 0;
             requestAnimationFrame(animateCentroidMovement);
         }
@@ -273,17 +268,17 @@ export namespace KMeans
     export const init = () => {
         // check input
         let dataCount: number = store.getState().controller.DataCount;
-        if(!dataCount) {
+        if (!dataCount) {
             alert("Please add data!");
             return;
         }
 
         let centroidsCount: number = store.getState().controller.CentersCount;
-        if(!centroidsCount) {
+        if (!centroidsCount) {
             alert("Please add centroids!");
             return;
         }
-        
+
         // reset board
         resetBoard();
 

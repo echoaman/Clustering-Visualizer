@@ -2,7 +2,7 @@ import controllerStyles from "../styles/Controller.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../redux/reducers/rootReducer";
 import { AController } from "../redux/states-and-actions/actions";
-import { updateCentersCountAction, updateDataCountAction } from "../redux/action-creators/controllerActions";
+import { updateCentersCountAction, updateDataCountAction, updateMinPointsAction, updateNeighbourhoodAction } from "../redux/action-creators/controllerActions";
 import { Algos, SecondaryControlButtons, Settings } from "../lib/enums";
 import { Utility } from "../lib/utility";
 
@@ -14,6 +14,8 @@ export default function Controller() {
     const SecondaryControl: SecondaryControlButtons = useSelector((state: AppState) => state.controller.SecondaryControl);
     const IsAppRunning: boolean = useSelector((state: AppState) => state.algorithms.IsAppRunning);
     const SelectedAlgo: Algos = useSelector((state: AppState) => state.algorithms.SelectedAlgorithm);
+    const Epsilon: number = useSelector((state: AppState) => state.controller.Neighbourhood);
+    const MinPoints: number = useSelector((state: AppState) => state.controller.MinPoints);
 
     const dataCountChange = (count: number) => {
         dispatch<AController>(updateDataCountAction(count));
@@ -31,6 +33,14 @@ export default function Controller() {
         }
         
         Utility.changeCanvasClickEvent(ctrlId);
+    }
+
+    const neighbourHoodChange = (epsilon: number) => {
+        dispatch<AController>(updateNeighbourhoodAction(epsilon));
+    }
+
+    const minPointsChange = (count: number) => {
+        dispatch<AController>(updateMinPointsAction(count));
     }
 
     return (
@@ -59,13 +69,22 @@ export default function Controller() {
                     <span className={controllerStyles.main_ctrl_item_count}>{CentersCount}</span>
                     <button className={controllerStyles.main_ctrl_item_random} disabled={IsAppRunning} onClick={() => Utility.generateRandomCenters()}>Randomize</button>
                 </div>
+                <div className={controllerStyles.main_ctrl_item} style={{ display: SelectedAlgo === Algos.Dbsacn ? "block" : "none" }} >
+                    <span className={controllerStyles.main_ctrl_item_label} title="Neighbourhood radius" >&epsilon;</span>
+                    <input className={controllerStyles.range} disabled={IsAppRunning} type="range" min="20" max="40" value={Epsilon} step="1" onChange={(e) => neighbourHoodChange(parseInt(e.target.value))} />
+                    <span className={controllerStyles.main_ctrl_item_count} style={{ left: "50%", transform: "translateX(-50%)" }} >{Epsilon}</span>
+                </div>
+                <div className={controllerStyles.main_ctrl_item} style={{ display: SelectedAlgo === Algos.Dbsacn ? "block" : "none" }} >
+                    <span className={controllerStyles.main_ctrl_item_label} >Minimum points</span>
+                    <input className={controllerStyles.range} disabled={IsAppRunning} type="range" min="3" max="10" value={MinPoints} step="1" onChange={(e) => minPointsChange(parseInt(e.target.value))} />
+                    <span className={controllerStyles.main_ctrl_item_count} style={{ left: "50%", transform: "translateX(-50%)" }} >{MinPoints}</span>
+                </div>
             </div>
             <div className={controllerStyles.sec_ctrl}>
                 <button disabled={IsAppRunning} className={SecondaryControl === SecondaryControlButtons.AddData ? "" : "inactive-btn"} onClick={() => secondaryControlChange(SecondaryControlButtons.AddData)} >Add data</button>
                 <button disabled={IsAppRunning} style={{ display: SelectedAlgo === Algos.Kmeans ? "block" : "none" }} className={SecondaryControl === SecondaryControlButtons.AddCenter ? "" : "inactive-btn"} onClick={() => secondaryControlChange(SecondaryControlButtons.AddCenter)} >Add centroid</button>
                 <button disabled={IsAppRunning} style={{ display: SelectedAlgo === Algos.Kmedoids ? "block" : "none" }} className={SecondaryControl === SecondaryControlButtons.AddCenter ? "" : "inactive-btn"} onClick={() => secondaryControlChange(SecondaryControlButtons.AddCenter)} >Add medoid</button>
-                <button disabled={IsAppRunning} style={{ display: SelectedAlgo === Algos.Kmeans ? "block" : "none" }} className={SecondaryControl === SecondaryControlButtons.RemovePoint ? "" : "inactive-btn"}  onClick={() => secondaryControlChange(SecondaryControlButtons.RemovePoint)} >Remove data/centroid</button>
-                <button disabled={IsAppRunning} style={{ display: SelectedAlgo === Algos.Kmedoids ? "block" : "none" }} className={SecondaryControl === SecondaryControlButtons.RemovePoint ? "" : "inactive-btn"}  onClick={() => secondaryControlChange(SecondaryControlButtons.RemovePoint)} >Remove data/medoid</button>
+                <button disabled={IsAppRunning} className={SecondaryControl === SecondaryControlButtons.RemovePoint ? "" : "inactive-btn"}  onClick={() => secondaryControlChange(SecondaryControlButtons.RemovePoint)} >Remove point</button>
             </div>
         </section>
     );

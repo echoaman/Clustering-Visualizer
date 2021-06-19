@@ -14,5 +14,7 @@ export type SCanvas = {
 export type SController = {
     DataCount: number,
     CentersCount: number,
-    SecondaryControl: SecondaryControlButtons
+    SecondaryControl: SecondaryControlButtons,
+    Neighbourhood: number,
+    MinPoints: number
 };

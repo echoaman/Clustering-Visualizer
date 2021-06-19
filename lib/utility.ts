@@ -3,13 +3,13 @@ import { updateCentersListAction, updateDataListAction } from "../redux/action-c
 import { updateCentersCountAction, updateDataCountAction, updateSecondaryControlAction } from "../redux/action-creators/controllerActions";
 import { AAlgorithms, ACanvas, AController } from "../redux/states-and-actions/actions";
 import { store } from "../redux/store";
+import { Dbscan } from "./algorithms/dbscan";
 import { KMeans } from "./algorithms/kmeans";
 import { KMedoids } from "./algorithms/kmedoids";
 import { Algos, SecondaryControlButtons, Settings } from "./enums";
 import { Point } from "./Point";
 
-export namespace Utility 
-{
+export namespace Utility {
     export const clearBoard = () => {
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
         const context = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -51,7 +51,7 @@ export namespace Utility
 
     export const drawData = (dataX: number, dataY: number, color: string) => {
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-        const context = canvas.getContext("2d") as CanvasRenderingContext2D ;
+        const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
         context.beginPath();
         context.arc(dataX, dataY, Settings.Radius, 0, Math.PI * 2, false);
@@ -62,17 +62,31 @@ export namespace Utility
         context.fill();
     }
 
+    export const drawCircle = (x: number, y: number, color: string) => {
+        const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+        const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+        const epsilon: number = store.getState().controller.Neighbourhood;
+
+        context.beginPath();
+        context.fillStyle = getRgbaColor(color, 0.2);
+        context.arc(x, y, epsilon, 0, Math.PI * 2, false);
+        context.fill();
+    }
+
     export const generateRandomData = () => {
         const algo: Algos = store.getState().algorithms.SelectedAlgorithm;
         switch (algo) {
             case Algos.Kmeans:
                 KMeans.generatorRandomData();
                 break;
-        
+
             case Algos.Kmedoids:
                 KMedoids.generateRandomData();
                 break;
-            
+
+            case Algos.Dbsacn:
+                Dbscan.generateRandomData();
+                break;
             default:
                 break;
         }
@@ -84,7 +98,7 @@ export namespace Utility
             case Algos.Kmeans:
                 KMeans.generateRandomCentroids();
                 break;
-        
+
             case Algos.Kmedoids:
                 KMedoids.generateRandomMedoids();
                 break;
@@ -98,13 +112,21 @@ export namespace Utility
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
-    export const generateColor = () => {
+    export const getHexColor = () => {
         let color: string = "#";
         let options: string = "23456789abcd";
         while (color.length < 7)
             color += options[randomIntInRange(0, options.length - 1)];
 
         return color;
+    }
+
+    const getRgbaColor = (color: string, opacity: number) => {
+        let r: number = parseInt(color.substring(1, 3), 16);
+        let g: number = parseInt(color.substring(3, 5), 16);
+        let b: number = parseInt(color.substring(5, 7), 16);
+
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     }
 
     export const getClickCoordinates = (e: MouseEvent) => {
@@ -116,7 +138,7 @@ export namespace Utility
         return { x, y };
     }
 
-    export  const getClickedPoint = (x: number, y: number, data: Point[], centers: Point[] = []) => {
+    export const getClickedPoint = (x: number, y: number, data: Point[], centers: Point[] = []) => {
         let minDist: number = Settings.Radius;
         let index: number = -1;
         let isCenter: boolean = false;
@@ -147,11 +169,11 @@ export namespace Utility
 
     const addData = (e: MouseEvent) => {
         const data: Point[] = store.getState().canvas.Data;
-        if(data.length >= Settings.MaxDataLimit) {
+        if (data.length >= Settings.MaxDataLimit) {
             alert(`The max data limit is ${Settings.MaxDataLimit}!`);
             return;
         }
-        
+
         const { x, y } = getClickCoordinates(e);
 
         const dataPoint: Point = new Point(x, y, Settings.White);
@@ -179,14 +201,20 @@ export namespace Utility
 
     const removePoint = (e: MouseEvent) => {
         const algo: Algos = store.getState().algorithms.SelectedAlgorithm;
-        
+
         switch (algo) {
             case Algos.Kmeans:
                 KMeans.removePoint(e);
                 break;
+
             case Algos.Kmedoids:
                 KMedoids.removePoint(e);
                 break;
+
+            case Algos.Dbsacn:
+                Dbscan.removePoint(e);
+                break;
+
             default:
                 break;
         }
@@ -210,11 +238,11 @@ export namespace Utility
             case SecondaryControlButtons.AddData:
                 canvas.addEventListener("click", addData, false);
                 break;
-        
+
             case SecondaryControlButtons.AddCenter:
                 canvas.addEventListener("click", addCenter, false);
                 break;
-            
+
             case SecondaryControlButtons.RemovePoint:
                 canvas.addEventListener("click", removePoint, false);
                 break;
@@ -242,11 +270,15 @@ export namespace Utility
             case Algos.Kmeans:
                 KMeans.init();
                 break;
-        
+
             case Algos.Kmedoids:
                 KMedoids.init();
                 break;
-            
+
+            case Algos.Dbsacn:
+                Dbscan.init();
+                break;
+
             default:
                 alert("Select algorithm!");
                 break;
@@ -263,10 +295,18 @@ export namespace Utility
         clearBoard();
         data.forEach((datum) => {
             datum.color = Settings.White;
-            datum.isMedoid = false;
+            datum.isCenter = false;
             drawData(datum.x, datum.y, datum.color);
         });
 
         store.dispatch<ACanvas>(updateDataListAction(data));
+    }
+
+    export const euclideanDistance = (pointA: Point, pointB: Point) => {
+        return Math.sqrt(Math.pow(pointA.x - pointB.x, 2) + Math.pow(pointA.y - pointB.y, 2));
+    }
+
+    export const manhattanDistance = (pointA: Point, pointB: Point): number => {
+        return (Math.abs(pointA.x - pointB.x) + Math.abs(pointA.y - pointB.y));
     }
 }

@@ -2,12 +2,12 @@ export class Point {
     x: number;
     y: number;
     color: string;
-    isMedoid: boolean;
+    isCenter: boolean;
 
-    constructor(x: number, y: number, color: string, isMedoid: boolean = false) {
+    constructor(x: number, y: number, color: string, isCenter: boolean = false) {
         this.x = x;
         this.y = y;
         this.color = color;
-        this.isMedoid = isMedoid;
+        this.isCenter = isCenter;
     }
 }

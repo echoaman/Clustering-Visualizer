@@ -6,8 +6,7 @@ import { Settings } from "../enums";
 import { Point } from "../Point";
 import { Utility } from "../utility";
 
-export namespace KMedoids
-{
+export namespace KMedoids {
     let distanceMatrix: number[][] = [];
     let data: Point[] = [];
     let currMedoidIdxs: number[] = [];
@@ -17,18 +16,18 @@ export namespace KMedoids
     let currDataIdx: number = 0;
 
     const drawPoints = (currData: Point[] = data) => {
-        const currMedoids: Point[] = currData.filter((datum) => datum.isMedoid);
+        const currMedoids: Point[] = currData.filter((datum) => datum.isCenter);
 
         currData.forEach((datum) => {
-            const { x, y, color, isMedoid } = datum;
-            if(!isMedoid) {
+            const { x, y, color, isCenter } = datum;
+            if (!isCenter) {
                 Utility.drawData(x, y, color);
             }
         });
 
         currMedoids.forEach((medoid) => {
             const { x, y, color } = medoid;
-            Utility.drawCenter(x, y, color); 
+            Utility.drawCenter(x, y, color);
         });
     }
 
@@ -39,7 +38,7 @@ export namespace KMedoids
 
         Utility.clearBoard();
 
-        for(let i = 0 ; i < count ; i++) {
+        for (let i = 0; i < count; i++) {
             let datum: Point = new Point(Math.random() * (canvas.width - Settings.Radius * 2) + Settings.Radius, Math.random() * (canvas.height - Settings.Radius * 2) + Settings.Radius, Settings.White);
 
             newData.push(datum);
@@ -57,14 +56,14 @@ export namespace KMedoids
 
         currData.forEach((datum) => {
             datum.color = Settings.White;
-            datum.isMedoid = false;
+            datum.isCenter = false;
         });
-        
-        while(count) {
+
+        while (count) {
             let datum: Point = currData[Utility.randomIntInRange(0, currData.length - 1)];
-            if(!datum.isMedoid) {
-                datum.color = Utility.generateColor();
-                datum.isMedoid = true;
+            if (!datum.isCenter) {
+                datum.color = Utility.getHexColor();
+                datum.isCenter = true;
                 count--;
             }
         }
@@ -78,7 +77,7 @@ export namespace KMedoids
     export const addMedoid = (e: MouseEvent) => {
         let currData: Point[] = store.getState().canvas.Data;
         const medoidsCount: number = store.getState().controller.CentersCount;
-        if(medoidsCount >= Math.min(currData.length, Settings.MaxCenterLimit)) {
+        if (medoidsCount >= Math.min(currData.length, Settings.MaxCenterLimit)) {
             alert(`The current max medoid limit is ${Math.min(currData.length, Settings.MaxCenterLimit)}!`);
             return;
         }
@@ -86,16 +85,16 @@ export namespace KMedoids
         const { x, y } = Utility.getClickCoordinates(e);
         const { index, isCenter } = Utility.getClickedPoint(x, y, currData);
 
-        if(index === -1) {
+        if (index === -1) {
             return;
         }
 
-        if(currData[index].isMedoid) {
+        if (currData[index].isCenter) {
             return;
         }
 
-        currData[index].isMedoid = true;
-        currData[index].color = Utility.generateColor();
+        currData[index].isCenter = true;
+        currData[index].color = Utility.getHexColor();
 
         Utility.clearBoard();
         drawPoints(currData);
@@ -109,7 +108,7 @@ export namespace KMedoids
         const { x, y } = Utility.getClickCoordinates(e);
         const { index, isCenter } = Utility.getClickedPoint(x, y, currData);
 
-        if(index === -1) {
+        if (index === -1) {
             return;
         }
 
@@ -118,7 +117,7 @@ export namespace KMedoids
         store.dispatch<ACanvas>(updateDataListAction(newData));
         store.dispatch<AController>(updateDataCountAction(newData.length));
 
-        if(point.isMedoid) {
+        if (point.isCenter) {
             const medoidsCount: number = store.getState().controller.CentersCount;
             store.dispatch<AController>(updateCentersCountAction(medoidsCount - 1));
         }
@@ -131,7 +130,7 @@ export namespace KMedoids
         let currData: Point[] = store.getState().canvas.Data;
 
         currData.forEach((datum) => {
-            if(!datum.isMedoid) {
+            if (!datum.isCenter) {
                 datum.color = Settings.White;
             }
         });
@@ -144,8 +143,8 @@ export namespace KMedoids
         // setup
         data = currData;
         currMedoidIdxs = [];
-        for(let i = 0 ; i < currData.length ; i++) {
-            if(currData[i].isMedoid) {
+        for (let i = 0; i < currData.length; i++) {
+            if (currData[i].isCenter) {
                 currMedoidIdxs.push(i);
             }
         }
@@ -158,32 +157,28 @@ export namespace KMedoids
         makeDistanceMatrix();
     }
 
-    const manhattanDistance = (pointA: Point, pointB: Point): number => {
-        return (Math.abs(pointA.x - pointB.x) + Math.abs(pointA.y - pointB.y));
-    }
-
     const makeDistanceMatrix = () => {
-        for(let i = 0 ; i < data.length ; i++) {
+        for (let i = 0; i < data.length; i++) {
             let dist: number[] = [];
-            for(let j = 0 ; j < data.length ; j++) {
-                dist.push(manhattanDistance(data[i], data[j]));
+            for (let j = 0; j < data.length; j++) {
+                dist.push(Utility.manhattanDistance(data[i], data[j]));
             }
             distanceMatrix.push(dist);
         }
     }
 
     const findNewMedoid = (medoid: number, cluster: number[]): number => {
-        if(cluster.length === 0) {
+        if (cluster.length === 0) {
             return medoid;
         }
 
         let minDist = Infinity;
         let idx = -1;
 
-        for(let i = 0 ; i < cluster.length ; i++) {
+        for (let i = 0; i < cluster.length; i++) {
             let dist = 0;
-            for(let j = 0 ; j < cluster.length ; j++) {
-                if(i !== j) {
+            for (let j = 0; j < cluster.length; j++) {
+                if (i !== j) {
                     dist += distanceMatrix[cluster[i]][cluster[j]];
                 }
             }
@@ -201,7 +196,7 @@ export namespace KMedoids
     const findNewMedoids = () => {
         let newMedoids: number[] = [];
         let keys: number[] = Array.from(clusters.keys());
-        for(let i = 0 ; i < keys.length ; i++) {
+        for (let i = 0; i < keys.length; i++) {
             let currCluster = clusters.get(keys[i]) as number[];
             let newMedoid = findNewMedoid(keys[i], currCluster);
             newMedoids.push(newMedoid);
@@ -214,10 +209,10 @@ export namespace KMedoids
     const getCluster = (): number => {
         let keys: number[] = Array.from(clusters.keys());
         let idx: number = -1;
-        for(let i = 0 ; i < keys.length ; i++) {
+        for (let i = 0; i < keys.length; i++) {
             const cluster = clusters.get(keys[i]);
             idx = cluster!.indexOf(currDataIdx);
-            if(idx !== -1) {
+            if (idx !== -1) {
                 idx = keys[i];
                 break;
             }
@@ -227,7 +222,7 @@ export namespace KMedoids
     }
 
     const animate = () => {
-        if(currDataIdx < data.length) {      
+        if (currDataIdx < data.length) {
             const clusterIdx: number = getCluster();
             data[currDataIdx].color = data[clusterIdx].color;
 
@@ -249,11 +244,11 @@ export namespace KMedoids
         })
 
         let tempCost: number = 0;
-        for(let i = 0 ; i < data.length ; i++) {
-            if(!data[i].isMedoid) {
+        for (let i = 0; i < data.length; i++) {
+            if (!data[i].isCenter) {
                 let dist = Infinity;
                 let idx = -1;
-                for(let j = 0 ; j < currMedoidIdxs.length ; j++) {
+                for (let j = 0; j < currMedoidIdxs.length; j++) {
                     const manDist = distanceMatrix[currMedoidIdxs[j]][i];
                     if (manDist < dist) {
                         dist = manDist;
@@ -265,24 +260,24 @@ export namespace KMedoids
             }
         }
 
-        if(tempCost < totalCost) {
-            for(let l = 0 ; l < data.length ; l++) {
-                if(currMedoidIdxs.indexOf(l) < 0) {
-                    data[l].isMedoid = false;
+        if (tempCost < totalCost) {
+            for (let l = 0; l < data.length; l++) {
+                if (currMedoidIdxs.indexOf(l) < 0) {
+                    data[l].isCenter = false;
                 } else {
-                    data[l].isMedoid = true;
+                    data[l].isCenter = true;
                 }
             }
-            
+
             totalCost = tempCost;
             animate();
         } else {
             alert("K Medoids completed!");
-            for(let l = 0 ; l < data.length ; l++) {
-                if(prevMedoidIdx.indexOf(l) < 0) {
-                    data[l].isMedoid = false;
+            for (let l = 0; l < data.length; l++) {
+                if (prevMedoidIdx.indexOf(l) < 0) {
+                    data[l].isCenter = false;
                 } else {
-                    data[l].isMedoid = true;
+                    data[l].isCenter = true;
                 }
             }
             store.dispatch<ACanvas>(updateDataListAction(data));
@@ -293,19 +288,19 @@ export namespace KMedoids
     export const init = () => {
         // check input
         let dataCount: number = store.getState().controller.DataCount;
-        if(!dataCount) {
+        if (!dataCount) {
             alert("Please add data!");
             return;
         }
 
         let medoidsCount: number = store.getState().controller.CentersCount;
-        if(!medoidsCount) {
+        if (!medoidsCount) {
             alert("Please add medoids!");
             return;
         }
 
         resetBoard();
-        
+
         Utility.disableButtons();
 
         evaluateCost();
