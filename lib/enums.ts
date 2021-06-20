@@ -1,6 +1,7 @@
 export enum Algos {
     Kmeans = "kmeans",
-    Kmedoids = "kmedoids"
+    Kmedoids = "kmedoids",
+    Dbsacn = "dbscan"
 };
 
 export enum SecondaryControlButtons {

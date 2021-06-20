@@ -20,7 +20,8 @@ export const algorithmsReducer = (state: SAlgorithms = initialState, action: AAl
             return{
                 ...state,
                 IsAppRunning: !state.IsAppRunning
-            }
+            };
+            
         default:
             return { ...state };
     };

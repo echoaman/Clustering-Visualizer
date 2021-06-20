@@ -22,3 +22,17 @@ export const updateSecondaryControlAction = (id: SecondaryControlButtons): ACont
         payload: id
     };
 }
+
+export const updateNeighbourhoodAction = (epsilon: number): AController => {
+    return {
+        type: ActionTypes.NeighbourhoodUpdate,
+        payload: epsilon
+    };
+}
+
+export const updateMinPointsAction = (count: number): AController => {
+    return {
+        type: ActionTypes.MinimumPointsUpdate,
+        payload: count
+    };
+}
