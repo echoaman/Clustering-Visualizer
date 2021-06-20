@@ -17,3 +17,35 @@
     padding: 5px;
     border-radius: 50px;
 }
+
+.algo_wrapper {
+    width: 80%;
+}
+
+.control_wrapper {
+    width: 20%;
+}
+
+.svg {
+    width: clamp(16px, 1.5vw, 24px);
+    height: clamp(16px, 1.5vw, 24px);
+    margin-left: 5px;
+}
+
+@media screen and (max-width: 760px) {
+    .algo_wrapper {
+        width: 60%;
+    }
+
+    .control_wrapper {
+        width: 40%;
+    }
+
+    .svg {
+        margin-left: 2px;
+    }
+
+    .ctrl {
+        padding: 3px;
+    }
+}

@@ -15,7 +15,7 @@
 .coordinates_label {
     position: absolute;
     left: 50%;
-    top: 10px;
+    top: 10%;
     transform: translateX(-50%);
 }
 
@@ -59,7 +59,7 @@
 .main_ctrl_item_label {
     position: absolute;
     left: 50%;
-    top: 10px;
+    top: 10%;
     transform: translateX(-50%);
 }
 
@@ -80,4 +80,18 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+}
+
+@media screen and (max-width: 760px) {
+    .coordinates {
+        display: none;
+    }
+
+    .sec_ctrl {
+        width: 30%;
+    }
+
+    .main_ctrl_item {
+        width: 30%;
+    }
 }

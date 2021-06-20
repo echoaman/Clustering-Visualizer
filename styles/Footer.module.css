@@ -13,12 +13,24 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    font-size: clamp(20px, 2vw, 32px);
 }
 
 .profile_links {
-    width: 30px;
-    height: 30px;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+}
+
+.profile_links_svg {
+    width: clamp(16px, 2vw, 30px);
+    height: clamp(16px, 2vw, 30px);
+}
+
+.profile_links:nth-of-type(1) {
+    right: 15%
+}
+
+.profile_links:nth-of-type(2) {
+    right: 5%;
 }

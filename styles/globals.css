@@ -17,7 +17,7 @@ button {
     display: flex;
     align-items: center;
     cursor: pointer;
-    font-size: 16px;
+    font-size: clamp(10px, 2vw, 16px);
     font-weight: bold;
 }
 
@@ -31,4 +31,8 @@ button {
 
 button:disabled {
     color: grey;
+}
+
+span {
+    font-size: clamp(10px, 2vw, 16px);
 }
