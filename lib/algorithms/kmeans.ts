@@ -96,7 +96,7 @@ export namespace KMeans {
     export const addCentroid = (e: MouseEvent) => {
         const currCentroids: Point[] = store.getState().canvas.Centers;
         if (currCentroids.length >= Settings.MaxCenterLimit) {
-            alert(`The max centroid limit is ${Settings.MaxCenterLimit}!`);
+            Utility.displayToast(`The max centroid limit is ${Settings.MaxCenterLimit}!`, true);
             return;
         }
 
@@ -227,7 +227,7 @@ export namespace KMeans {
             requestAnimationFrame(animateCentroidMovement);
         } else {
             if (compareCurrAndPrevClusters()) {
-                alert("K Means completed!");
+                Utility.displayToast("K Means completed!");
                 store.dispatch<ACanvas>(updateDataListAction(data));
                 store.dispatch<ACanvas>(updateCentersListAction(centroids));
                 Utility.enableButtons();
@@ -269,13 +269,13 @@ export namespace KMeans {
         // check input
         let dataCount: number = store.getState().controller.DataCount;
         if (!dataCount) {
-            alert("Please add data!");
+            Utility.displayToast("Please add data!", true);
             return;
         }
-
+        
         let centroidsCount: number = store.getState().controller.CentersCount;
         if (!centroidsCount) {
-            alert("Please add centroids!");
+            Utility.displayToast("Please add centroids!", true);
             return;
         }
 

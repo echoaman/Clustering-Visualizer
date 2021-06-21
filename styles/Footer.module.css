@@ -28,9 +28,9 @@
 }
 
 .profile_links:nth-of-type(1) {
-    right: 15%
+    right: calc(50px + clamp(16px, 2vw, 30px));
 }
 
 .profile_links:nth-of-type(2) {
-    right: 5%;
+    right: 25px;
 }

@@ -41,6 +41,7 @@ export default function Home() {
         canvas.addEventListener("mousemove", updateCoordinates, false);
         canvas.addEventListener("mouseleave", resetCoordinates, false);
         canvas.addEventListener("touchend", resetCoordinates, false);
+        window.addEventListener("resize", setCanvasDimensions, false);
     }, []);
 
     return (
@@ -49,6 +50,7 @@ export default function Home() {
                 <title>Clustering Visualizer</title>
                 <meta name="description" content="Clustering Visualizer" />
                 <meta name="keywords" content="Clustering Visualizer" />
+                <meta content="width=device-width, initial-scale=1.0, user-scalable=no"/>
             </Head>
             <Canvas />
             <Algorithms />

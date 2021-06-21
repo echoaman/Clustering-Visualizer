@@ -78,7 +78,7 @@ export namespace KMedoids {
         let currData: Point[] = store.getState().canvas.Data;
         const medoidsCount: number = store.getState().controller.CentersCount;
         if (medoidsCount >= Math.min(currData.length, Settings.MaxCenterLimit)) {
-            alert(`The current max medoid limit is ${Math.min(currData.length, Settings.MaxCenterLimit)}!`);
+            Utility.displayToast(`The current max medoid limit is ${Math.min(currData.length, Settings.MaxCenterLimit)}!`, true);
             return;
         }
 
@@ -114,14 +114,17 @@ export namespace KMedoids {
 
         let newData = currData;
         const point: Point = newData.splice(index, 1)[0];
-        store.dispatch<ACanvas>(updateDataListAction(newData));
-        store.dispatch<AController>(updateDataCountAction(newData.length));
-
+        
         if (point.isCenter) {
             const medoidsCount: number = store.getState().controller.CentersCount;
             store.dispatch<AController>(updateCentersCountAction(medoidsCount - 1));
+            point.isCenter = false;
+            point.color = Settings.White;
+            newData.push(point);
         }
-
+        
+        store.dispatch<ACanvas>(updateDataListAction(newData));
+        store.dispatch<AController>(updateDataCountAction(newData.length));
         Utility.clearBoard();
         drawPoints(newData);
     }
@@ -272,7 +275,7 @@ export namespace KMedoids {
             totalCost = tempCost;
             animate();
         } else {
-            alert("K Medoids completed!");
+            Utility.displayToast("K Medoids completed!");
             for (let l = 0; l < data.length; l++) {
                 if (prevMedoidIdx.indexOf(l) < 0) {
                     data[l].isCenter = false;
@@ -289,13 +292,13 @@ export namespace KMedoids {
         // check input
         let dataCount: number = store.getState().controller.DataCount;
         if (!dataCount) {
-            alert("Please add data!");
+            Utility.displayToast("Please add data!", true);
             return;
         }
-
+        
         let medoidsCount: number = store.getState().controller.CentersCount;
         if (!medoidsCount) {
-            alert("Please add medoids!");
+            Utility.displayToast("Please add medoids!", true);
             return;
         }
 

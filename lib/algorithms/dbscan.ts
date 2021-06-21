@@ -47,7 +47,24 @@ export namespace Dbscan
 
         Utility.clearBoard();
         currData.forEach((datum) => {
-            Utility.drawData(datum.x, datum.y, datum.color);
+            const { x, y, color, isCenter } = datum;
+            if(!isCenter) {
+                Utility.drawData(x, y, color);
+            }
+        });
+
+        currData.forEach((datum) => {
+            const { x, y, color, isCenter } = datum;
+            if(isCenter) {
+                Utility.drawCircle(x, y, color);
+            }
+        });
+        
+        currData.forEach((datum) => {
+            const { x, y, color, isCenter } = datum;
+            if(isCenter) {
+                Utility.drawCenter(x, y, color);
+            }
         });
 
         store.dispatch<ACanvas>(updateDataListAction(currData));
@@ -134,7 +151,7 @@ export namespace Dbscan
             currCluster = clusters[clusterIdx];
             animateClusterCreation();
         } else {
-            alert("DBSCAN completed!");
+            Utility.displayToast("DBSCAN completed!");
 
             Utility.clearBoard();
             data.forEach((datum) => {
@@ -166,7 +183,7 @@ export namespace Dbscan
     export const init = () => {
         const count: number = store.getState().controller.DataCount;
         if(count === 0) {
-            alert("Please add data!");
+            Utility.displayToast("Please add data!", true);
             return;
         }
 
@@ -186,14 +203,6 @@ export namespace Dbscan
             }
         }
 
-        // console.log(clusters);
-        // clusters.forEach((c) => {
-        //     let co = Utility.getHexColor();
-        //     c.forEach(core => {
-        //         Utility.drawCenter(data[core].x, data[core].y, co);
-        //         Utility.drawCircle(data[core].x, data[core].y, co);
-        //     });
-        // });
         animate();
     }
 }
