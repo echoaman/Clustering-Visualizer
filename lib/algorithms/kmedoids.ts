@@ -83,7 +83,7 @@ export namespace KMedoids {
         }
 
         const { x, y } = Utility.getClickCoordinates(e);
-        const { index, isCenter } = Utility.getClickedPoint(x, y, currData);
+        const { index } = Utility.getClickedPoint(x, y, currData);
 
         if (index === -1) {
             return;
@@ -106,7 +106,7 @@ export namespace KMedoids {
     export const removePoint = (e: MouseEvent) => {
         const currData: Point[] = store.getState().canvas.Data;
         const { x, y } = Utility.getClickCoordinates(e);
-        const { index, isCenter } = Utility.getClickedPoint(x, y, currData);
+        const { index } = Utility.getClickedPoint(x, y, currData);
 
         if (index === -1) {
             return;
@@ -156,8 +156,6 @@ export namespace KMedoids {
         totalCost = Infinity;
         currDataIdx = 0;
         clusters = new Map<number, number[]>();
-
-        makeDistanceMatrix();
     }
 
     const makeDistanceMatrix = () => {
@@ -178,6 +176,9 @@ export namespace KMedoids {
         let minDist = Infinity;
         let idx = -1;
 
+        // find new point from cluster such that 
+        // its avg distance from all other points in clusters and its medoid
+        // is the least
         for (let i = 0; i < cluster.length; i++) {
             let dist = 0;
             for (let j = 0; j < cluster.length; j++) {
@@ -196,9 +197,10 @@ export namespace KMedoids {
         return cluster[idx];
     }
 
-    const findNewMedoids = () => {
+    const updateCurrentMedoids = () => {
         let newMedoids: number[] = [];
         let keys: number[] = Array.from(clusters.keys());
+
         for (let i = 0; i < keys.length; i++) {
             let currCluster = clusters.get(keys[i]) as number[];
             let newMedoid = findNewMedoid(keys[i], currCluster);
@@ -212,6 +214,7 @@ export namespace KMedoids {
     const getCluster = (): number => {
         let keys: number[] = Array.from(clusters.keys());
         let idx: number = -1;
+
         for (let i = 0; i < keys.length; i++) {
             const cluster = clusters.get(keys[i]);
             idx = cluster!.indexOf(currDataIdx);
@@ -229,6 +232,7 @@ export namespace KMedoids {
             const clusterIdx: number = getCluster();
             data[currDataIdx].color = data[clusterIdx].color;
 
+            // redraw after getting cluster's color
             Utility.clearBoard();
             drawPoints();
 
@@ -236,7 +240,7 @@ export namespace KMedoids {
             requestAnimationFrame(animate);
         } else {
             currDataIdx = 0;
-            findNewMedoids();
+            updateCurrentMedoids();
         }
     }
 
@@ -246,7 +250,7 @@ export namespace KMedoids {
             clusters.set(idx, []);
         })
 
-        let tempCost: number = 0;
+        let medoidsCost: number = 0;
         for (let i = 0; i < data.length; i++) {
             if (!data[i].isCenter) {
                 let dist = Infinity;
@@ -254,16 +258,18 @@ export namespace KMedoids {
                 for (let j = 0; j < currMedoidIdxs.length; j++) {
                     const manDist = distanceMatrix[currMedoidIdxs[j]][i];
                     if (manDist < dist) {
+                        // find closest medoid
                         dist = manDist;
                         idx = j;
                     }
                 }
+                // update current cluster and medoidsCost
                 clusters.get(currMedoidIdxs[idx])!.push(i);
-                tempCost += dist;
+                medoidsCost += dist;
             }
         }
 
-        if (tempCost < totalCost) {
+        if (medoidsCost < totalCost) {
             for (let l = 0; l < data.length; l++) {
                 if (currMedoidIdxs.indexOf(l) < 0) {
                     data[l].isCenter = false;
@@ -272,7 +278,8 @@ export namespace KMedoids {
                 }
             }
 
-            totalCost = tempCost;
+            // update total cost
+            totalCost = medoidsCost;
             animate();
         } else {
             Utility.displayToast("K Medoids completed!");
@@ -303,6 +310,8 @@ export namespace KMedoids {
         }
 
         resetBoard();
+
+        makeDistanceMatrix();
 
         Utility.disableButtons();
 

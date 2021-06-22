@@ -24,6 +24,9 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .coordinates_y {
@@ -31,6 +34,9 @@
     top: 75%;
     left: 50%;
     transform: translateX(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .main_ctrl {
@@ -70,6 +76,7 @@
 .main_ctrl_item_count {
     position: absolute;
     top: 75%;
+    line-height: 1;
 }
 
 .main_ctrl_item_random {

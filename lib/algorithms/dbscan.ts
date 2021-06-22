@@ -117,6 +117,7 @@ export namespace Dbscan
                     data[possibleCores[i]].isCenter = true;
 
                     neighbours.forEach((neighbour) => {
+                        // ignnore cores
                         if(cluster.indexOf(neighbour) < 0) {
                             possibleCores.push(neighbour);
                         }
@@ -134,7 +135,7 @@ export namespace Dbscan
         if (coreIdx < currCluster.length) {
             data[currCluster[coreIdx]].color = currColor;
             const { x, y, color } = data[currCluster[coreIdx]];
-            Utility.drawCircle(x ,y ,color);
+            Utility.drawCircle(x, y, color);
 
             coreIdx++;
             requestAnimationFrame(animateClusterCreation);
@@ -147,6 +148,7 @@ export namespace Dbscan
 
     const animate = () => {
         if(clusterIdx < clusters.length) {
+            // draw every cluster
             currColor = Utility.getHexColor();
             currCluster = clusters[clusterIdx];
             animateClusterCreation();
@@ -197,6 +199,7 @@ export namespace Dbscan
             }
 
             const neighbours: number[] = findNeighbours(i);
+            // the neighbours array wont contain the point
             if(neighbours.length + 1 >= minPoints) {
                 data[i].isCenter = true;
                 createCluster(i, neighbours);
