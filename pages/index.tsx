@@ -36,11 +36,6 @@ export default function Home() {
 
     // componentDidMount
     useEffect(() => {
-        
-        screen.orientation.lock("natural")
-            .then(v => console.log(v))
-            .catch(r => console.log(r));
-
         setCanvasDimensions();
         let canvas = document.getElementById("canvas") as HTMLCanvasElement;
         canvas.addEventListener("mousemove", updateCoordinates, false);
