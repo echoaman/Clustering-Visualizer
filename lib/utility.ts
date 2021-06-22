@@ -8,6 +8,7 @@ import { KMeans } from "./algorithms/kmeans";
 import { KMedoids } from "./algorithms/kmedoids";
 import { Algos, SecondaryControlButtons, Settings } from "./enums";
 import { Point } from "./Point";
+import canvasStyles from "../styles/Canvas.module.css";
 
 export namespace Utility {
     export const clearBoard = () => {
@@ -170,7 +171,7 @@ export namespace Utility {
     const addData = (e: MouseEvent) => {
         const data: Point[] = store.getState().canvas.Data;
         if (data.length >= Settings.MaxDataLimit) {
-            alert(`The max data limit is ${Settings.MaxDataLimit}!`);
+            displayToast(`The max data limit is ${Settings.MaxDataLimit}!`, true);
             return;
         }
 
@@ -280,7 +281,6 @@ export namespace Utility {
                 break;
 
             default:
-                alert("Select algorithm!");
                 break;
         }
     }
@@ -308,5 +308,22 @@ export namespace Utility {
 
     export const manhattanDistance = (pointA: Point, pointB: Point): number => {
         return (Math.abs(pointA.x - pointB.x) + Math.abs(pointA.y - pointB.y));
+    }
+
+    export const displayToast = (msg: string, isWarning: boolean = false) => {
+        const toast = document.getElementById("toast") as HTMLSpanElement;
+        toast.innerHTML = msg;
+
+        if (isWarning) {
+            toast.classList.toggle(canvasStyles.toast_warning);
+            setTimeout(() => {
+                toast.classList.toggle(canvasStyles.toast_warning);
+            }, 1500);
+        } else {
+            toast.classList.toggle(canvasStyles.toast_finished);
+            setTimeout(() => {
+                toast.classList.toggle(canvasStyles.toast_finished);
+            }, 1500);
+        }
     }
 }

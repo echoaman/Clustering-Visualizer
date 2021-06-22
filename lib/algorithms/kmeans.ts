@@ -96,7 +96,7 @@ export namespace KMeans {
     export const addCentroid = (e: MouseEvent) => {
         const currCentroids: Point[] = store.getState().canvas.Centers;
         if (currCentroids.length >= Settings.MaxCenterLimit) {
-            alert(`The max centroid limit is ${Settings.MaxCenterLimit}!`);
+            Utility.displayToast(`The max centroid limit is ${Settings.MaxCenterLimit}!`, true);
             return;
         }
 
@@ -150,13 +150,17 @@ export namespace KMeans {
 
         centroids.forEach((centroid, idx) => {
             let uDistance: number = Utility.euclideanDistance(datum, centroid);
+            
             if (uDistance < minDistance) {
+                // find closest cluster
                 minDistance = uDistance;
                 clusterId = idx;
             }
         });
 
         datum.color = centroids[clusterId].color;
+
+        // update current cluster
         currClusters.get(clusterId)!.push(datumIdx);
     }
 
@@ -166,6 +170,7 @@ export namespace KMeans {
         let centerX: number = 0;
         let centerY: number = 0;
 
+        // if no cluster formed by centroid, return its original coordinates
         if (cluster.length === 0) {
             const centroid = centroids[currCentroidIdx];
             return {
@@ -179,6 +184,7 @@ export namespace KMeans {
             centerY += data[idx].y;
         });
 
+        // find mean
         centerX /= cluster.length;
         centerY /= cluster.length;
 
@@ -200,10 +206,12 @@ export namespace KMeans {
 
     const animateCentroidMovement = () => {
         if (currCentroidIdx < centroids.length) {
+            // Find center of cluster
             const { centerX, centerY } = clusterCenterCoordinates();
             let x: number = centroids[currCentroidIdx].x * (1.0 - percentage) + centerX * percentage;
             let y: number = centroids[currCentroidIdx].y * (1.0 - percentage) + centerY * percentage;
 
+            // move centroid towards center
             if (percentage <= 1) {
                 percentage += Settings.Increment;
 
@@ -219,6 +227,7 @@ export namespace KMeans {
                     }
                 });
             } else {
+                // After centroid has reached the center
                 percentage = 0;
                 centroids[currCentroidIdx].x = x;
                 centroids[currCentroidIdx].y = y;
@@ -227,18 +236,20 @@ export namespace KMeans {
             requestAnimationFrame(animateCentroidMovement);
         } else {
             if (compareCurrAndPrevClusters()) {
-                alert("K Means completed!");
+                Utility.displayToast("K Means completed!");
                 store.dispatch<ACanvas>(updateDataListAction(data));
                 store.dispatch<ACanvas>(updateCentersListAction(centroids));
                 Utility.enableButtons();
             } else {
-                currCentroidIdx = 0;
-                percentage = 0;
-                prevClusters = currClusters;
                 currClusters = new Map<number, number[]>();
                 for (let i = 0; i < centroids.length; i++) {
                     currClusters.set(i, []);
                 }
+
+                // Reset parameters after updating each centroid's location
+                currCentroidIdx = 0;
+                percentage = 0;
+                prevClusters = currClusters;
                 requestAnimationFrame(animateClusterAssignment);
             }
         }
@@ -246,9 +257,11 @@ export namespace KMeans {
 
     const animateClusterAssignment = () => {
         if (currDataIdx < data.length) {
+            // assign single data point to a cluster
             assignCluster(data[currDataIdx], currDataIdx);
+            
+            // redraw data and centroids
             Utility.clearBoard();
-
             data.forEach((datum) => {
                 Utility.drawData(datum.x, datum.y, datum.color);
             });
@@ -257,9 +270,11 @@ export namespace KMeans {
                 Utility.drawCenter(centroid.x, centroid.y, centroid.color);
             });
 
+            // Increment data index
             currDataIdx++;
             requestAnimationFrame(animateClusterAssignment);
         } else {
+            // reset parameter on completion
             currDataIdx = 0;
             requestAnimationFrame(animateCentroidMovement);
         }
@@ -269,20 +284,18 @@ export namespace KMeans {
         // check input
         let dataCount: number = store.getState().controller.DataCount;
         if (!dataCount) {
-            alert("Please add data!");
+            Utility.displayToast("Please add data!", true);
             return;
         }
-
+        
         let centroidsCount: number = store.getState().controller.CentersCount;
         if (!centroidsCount) {
-            alert("Please add centroids!");
+            Utility.displayToast("Please add centroids!", true);
             return;
         }
 
-        // reset board
         resetBoard();
 
-        // disable buttons
         Utility.disableButtons();
 
         animateClusterAssignment();

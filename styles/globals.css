@@ -2,6 +2,9 @@ html,
 body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+  height: 100vh;
+  width: 100vw;
 }
 
 * {
@@ -17,7 +20,7 @@ button {
     display: flex;
     align-items: center;
     cursor: pointer;
-    font-size: 16px;
+    font-size: clamp(10px, 1.5vw, 16px);
     font-weight: bold;
 }
 
@@ -31,4 +34,8 @@ button {
 
 button:disabled {
     color: grey;
+}
+
+span {
+    font-size: clamp(10px, 1.5vw, 16px);
 }

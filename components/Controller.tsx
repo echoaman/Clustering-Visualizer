@@ -70,7 +70,7 @@ export default function Controller() {
                     <button className={controllerStyles.main_ctrl_item_random} disabled={IsAppRunning} onClick={() => Utility.generateRandomCenters()}>Randomize</button>
                 </div>
                 <div className={controllerStyles.main_ctrl_item} style={{ display: SelectedAlgo === Algos.Dbsacn ? "block" : "none" }} >
-                    <span className={controllerStyles.main_ctrl_item_label} title="Neighbourhood radius" >&epsilon;</span>
+                    <span className={controllerStyles.main_ctrl_item_label} title="Neighbourhood radius" >Neigbourhood Radius (&epsilon;)</span>
                     <input className={controllerStyles.range} disabled={IsAppRunning} type="range" min="20" max="40" value={Epsilon} step="1" onChange={(e) => neighbourHoodChange(parseInt(e.target.value))} />
                     <span className={controllerStyles.main_ctrl_item_count} style={{ left: "50%", transform: "translateX(-50%)" }} >{Epsilon}</span>
                 </div>

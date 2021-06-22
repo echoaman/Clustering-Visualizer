@@ -47,7 +47,24 @@ export namespace Dbscan
 
         Utility.clearBoard();
         currData.forEach((datum) => {
-            Utility.drawData(datum.x, datum.y, datum.color);
+            const { x, y, color, isCenter } = datum;
+            if(!isCenter) {
+                Utility.drawData(x, y, color);
+            }
+        });
+
+        currData.forEach((datum) => {
+            const { x, y, color, isCenter } = datum;
+            if(isCenter) {
+                Utility.drawCircle(x, y, color);
+            }
+        });
+        
+        currData.forEach((datum) => {
+            const { x, y, color, isCenter } = datum;
+            if(isCenter) {
+                Utility.drawCenter(x, y, color);
+            }
         });
 
         store.dispatch<ACanvas>(updateDataListAction(currData));
@@ -100,6 +117,7 @@ export namespace Dbscan
                     data[possibleCores[i]].isCenter = true;
 
                     neighbours.forEach((neighbour) => {
+                        // ignnore cores
                         if(cluster.indexOf(neighbour) < 0) {
                             possibleCores.push(neighbour);
                         }
@@ -117,7 +135,7 @@ export namespace Dbscan
         if (coreIdx < currCluster.length) {
             data[currCluster[coreIdx]].color = currColor;
             const { x, y, color } = data[currCluster[coreIdx]];
-            Utility.drawCircle(x ,y ,color);
+            Utility.drawCircle(x, y, color);
 
             coreIdx++;
             requestAnimationFrame(animateClusterCreation);
@@ -130,11 +148,12 @@ export namespace Dbscan
 
     const animate = () => {
         if(clusterIdx < clusters.length) {
+            // draw every cluster
             currColor = Utility.getHexColor();
             currCluster = clusters[clusterIdx];
             animateClusterCreation();
         } else {
-            alert("DBSCAN completed!");
+            Utility.displayToast("DBSCAN completed!");
 
             Utility.clearBoard();
             data.forEach((datum) => {
@@ -166,7 +185,7 @@ export namespace Dbscan
     export const init = () => {
         const count: number = store.getState().controller.DataCount;
         if(count === 0) {
-            alert("Please add data!");
+            Utility.displayToast("Please add data!", true);
             return;
         }
 
@@ -180,20 +199,13 @@ export namespace Dbscan
             }
 
             const neighbours: number[] = findNeighbours(i);
+            // the neighbours array wont contain the point
             if(neighbours.length + 1 >= minPoints) {
                 data[i].isCenter = true;
                 createCluster(i, neighbours);
             }
         }
 
-        // console.log(clusters);
-        // clusters.forEach((c) => {
-        //     let co = Utility.getHexColor();
-        //     c.forEach(core => {
-        //         Utility.drawCenter(data[core].x, data[core].y, co);
-        //         Utility.drawCircle(data[core].x, data[core].y, co);
-        //     });
-        // });
         animate();
     }
 }
