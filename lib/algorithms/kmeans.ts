@@ -20,7 +20,7 @@ export namespace KMeans {
 
     const resetBoard = () => {
         let currData: Point[] = store.getState().canvas.Data;
-        let currCentroids: Point[] = store.getState().canvas.Centers;
+        let currCentroids: Point[] = store.getState().canvas.Centroids;
 
         Utility.clearBoard();
         currData.forEach((datum) => {
@@ -63,7 +63,7 @@ export namespace KMeans {
             Utility.drawData(datum.x, datum.y, datum.color);
         }
 
-        const currCentroids: Point[] = store.getState().canvas.Centers;
+        const currCentroids: Point[] = store.getState().canvas.Centroids;
         currCentroids.forEach((centroid) => {
             Utility.drawCenter(centroid.x, centroid.y, centroid.color);
         });
@@ -85,7 +85,10 @@ export namespace KMeans {
         });
 
         for (let i = 0; i < count; i++) {
-            let centroid: Point = new Point(Math.random() * (canvas.width - Settings.Radius * 2) + Settings.Radius, Math.random() * (canvas.height - Settings.Radius * 2) + Settings.Radius, Utility.getHexColor());
+            let x: number = Math.random() * (canvas.width - Settings.Radius * 2) + Settings.Radius;
+            let y: number = Math.random() * (canvas.height - Settings.Radius * 2) + Settings.Radius
+            let centroid: Point = new Point(x, y, Utility.getHexColor(), true);
+            
             Utility.drawCenter(centroid.x, centroid.y, centroid.color);
             newCentroids.push(centroid);
         }
@@ -94,7 +97,7 @@ export namespace KMeans {
     }
 
     export const addCentroid = (e: MouseEvent) => {
-        const currCentroids: Point[] = store.getState().canvas.Centers;
+        const currCentroids: Point[] = store.getState().canvas.Centroids;
         if (currCentroids.length >= Settings.MaxCenterLimit) {
             Utility.displayToast(`The max centroid limit is ${Settings.MaxCenterLimit}!`, true);
             return;
@@ -102,7 +105,7 @@ export namespace KMeans {
 
         const { x, y } = Utility.getClickCoordinates(e);
 
-        const centroid: Point = new Point(x, y, Utility.getHexColor());
+        const centroid: Point = new Point(x, y, Utility.getHexColor(), true);
         Utility.drawCenter(centroid.x, centroid.y, centroid.color);
 
         const newCentroids: Point[] = [...currCentroids, centroid];
@@ -112,7 +115,7 @@ export namespace KMeans {
 
     export const removePoint = (e: MouseEvent) => {
         const currData: Point[] = store.getState().canvas.Data;
-        const currCentroids: Point[] = store.getState().canvas.Centers;
+        const currCentroids: Point[] = store.getState().canvas.Centroids;
         const { x, y } = Utility.getClickCoordinates(e);
         const { index, isCenter } = Utility.getClickedPoint(x, y, currData, currCentroids);
 

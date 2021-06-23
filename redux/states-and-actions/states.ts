@@ -8,7 +8,7 @@ export type SAlgorithms = {
 
 export type SCanvas = {
     Data: Point[],
-    Centers: Point[]
+    Centroids: Point[]
 };
 
 export type SController = {
