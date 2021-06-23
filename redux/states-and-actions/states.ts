@@ -15,6 +15,6 @@ export type SController = {
     DataCount: number,
     CentersCount: number,
     SecondaryControl: SecondaryControlButtons,
-    Neighbourhood: number,
+    Epsilon: number,
     MinPoints: number
 };

@@ -66,7 +66,7 @@ export namespace Utility {
     export const drawCircle = (x: number, y: number, color: string) => {
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
         const context = canvas.getContext("2d") as CanvasRenderingContext2D;
-        const epsilon: number = store.getState().controller.Neighbourhood;
+        const epsilon: number = store.getState().controller.Epsilon;
 
         context.beginPath();
         context.fillStyle = getRgbaColor(color, 0.2);

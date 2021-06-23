@@ -23,9 +23,9 @@ export const updateSecondaryControlAction = (id: SecondaryControlButtons): ACont
     };
 }
 
-export const updateNeighbourhoodAction = (epsilon: number): AController => {
+export const updateEpsilonAction = (epsilon: number): AController => {
     return {
-        type: ActionTypes.NeighbourhoodUpdate,
+        type: ActionTypes.EpsilonUpdate,
         payload: epsilon
     };
 }

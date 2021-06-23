@@ -2,7 +2,7 @@ import controllerStyles from "../styles/Controller.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../redux/reducers/rootReducer";
 import { AController } from "../redux/states-and-actions/actions";
-import { updateCentersCountAction, updateDataCountAction, updateMinPointsAction, updateNeighbourhoodAction } from "../redux/action-creators/controllerActions";
+import { updateCentersCountAction, updateDataCountAction, updateMinPointsAction, updateEpsilonAction } from "../redux/action-creators/controllerActions";
 import { Algos, SecondaryControlButtons, Settings } from "../lib/enums";
 import { Utility } from "../lib/utility";
 
@@ -14,7 +14,7 @@ export default function Controller() {
     const SecondaryControl: SecondaryControlButtons = useSelector((state: AppState) => state.controller.SecondaryControl);
     const IsAppRunning: boolean = useSelector((state: AppState) => state.algorithms.IsAppRunning);
     const SelectedAlgo: Algos = useSelector((state: AppState) => state.algorithms.SelectedAlgorithm);
-    const Epsilon: number = useSelector((state: AppState) => state.controller.Neighbourhood);
+    const Epsilon: number = useSelector((state: AppState) => state.controller.Epsilon);
     const MinPoints: number = useSelector((state: AppState) => state.controller.MinPoints);
 
     const dataCountChange = (count: number) => {
@@ -36,7 +36,7 @@ export default function Controller() {
     }
 
     const neighbourHoodChange = (epsilon: number) => {
-        dispatch<AController>(updateNeighbourhoodAction(epsilon));
+        dispatch<AController>(updateEpsilonAction(epsilon));
     }
 
     const minPointsChange = (count: number) => {

@@ -7,7 +7,7 @@ const initialState: SController = {
     DataCount: 0,
     CentersCount: 0,
     SecondaryControl: SecondaryControlButtons.None,
-    Neighbourhood: 30,
+    Epsilon: 30,
     MinPoints: 3
 };
 
@@ -31,10 +31,10 @@ export const controllerReducer = (state: SController = initialState, action: ACo
                 SecondaryControl: action.payload
             };
 
-        case ActionTypes.NeighbourhoodUpdate:
+        case ActionTypes.EpsilonUpdate:
             return {
                 ...state,
-                Neighbourhood: action.payload
+                Epsilon: action.payload
             };
         
         case ActionTypes.MinimumPointsUpdate:

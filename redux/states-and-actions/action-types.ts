@@ -6,6 +6,6 @@ export enum ActionTypes {
     SecondaryControlUpdate = "secondaryControl/update",
     AlgorithmUpdate = "algorithm/update",
     AppRunningToggle = "appRunning/toggle",
-    NeighbourhoodUpdate = "neighbourhood/update",
+    EpsilonUpdate = "neighbourhood/update",
     MinimumPointsUpdate = "minPoints/update"
 };

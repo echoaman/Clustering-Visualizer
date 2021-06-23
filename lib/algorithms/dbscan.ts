@@ -82,7 +82,7 @@ export namespace Dbscan
             Utility.drawData(datum.x, datum.y, datum.color);
         });
 
-        epsilon = store.getState().controller.Neighbourhood;
+        epsilon = store.getState().controller.Epsilon;
         minPoints = store.getState().controller.MinPoints;
         data = currData;
         clusters = [];

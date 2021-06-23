@@ -27,7 +27,7 @@ export type ACanvas = IUpdatePointsList;
 // Controller
 
 interface IUpdatePointsCount {
-    type: ActionTypes.DataCountUpdate | ActionTypes.CentersCountUpdate | ActionTypes.NeighbourhoodUpdate | ActionTypes.MinimumPointsUpdate,
+    type: ActionTypes.DataCountUpdate | ActionTypes.CentersCountUpdate | ActionTypes.EpsilonUpdate | ActionTypes.MinimumPointsUpdate,
     payload: number
 };
 
