@@ -20,17 +20,30 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
 }
 
 .profile_links_svg {
-    width: clamp(16px, 2vw, 30px);
-    height: clamp(16px, 2vw, 30px);
+    width: 24px;
+    height: 24px;
 }
 
 .profile_links:nth-of-type(1) {
-    right: calc(50px + clamp(16px, 2vw, 30px));
+    right: calc(2 * 24px + 9%);
 }
 
 .profile_links:nth-of-type(2) {
-    right: 25px;
+    right: calc(24px + 6%);
+}
+
+.profile_links:nth-of-type(3) {
+    right: 3%;
+}
+
+@media screen and (orientation:portrait) {
+    .app_title {
+        left: 5%;
+        transform: translateY(-50%);
+    }
 }

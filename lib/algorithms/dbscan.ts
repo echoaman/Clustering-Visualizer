@@ -156,17 +156,18 @@ export namespace Dbscan
             Utility.displayToast("DBSCAN completed!");
 
             Utility.clearBoard();
-            data.forEach((datum) => {
-                const { x, y, color, isCenter } = datum;
-                if(!isCenter) {
-                    Utility.drawData(x, y, color);
-                }
-            });
 
             data.forEach((datum) => {
                 const { x, y, color, isCenter } = datum;
                 if(isCenter) {
                     Utility.drawCircle(x, y, color);
+                }
+            });
+            
+            data.forEach((datum) => {
+                const { x, y, color, isCenter } = datum;
+                if(!isCenter) {
+                    Utility.drawData(x, y, color);
                 }
             });
 
